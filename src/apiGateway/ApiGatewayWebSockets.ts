@@ -1,5 +1,6 @@
 import { ApiGatewayManagementApi, AWSError } from 'aws-sdk';
 import { Context } from 'aws-lambda';
+import { IamRoleStatement } from '../AwsResource';
 
 export interface ApiGatewayWebSocketEvent {
   requestContext: {
@@ -41,4 +42,12 @@ export async function sendWebSocketMessage(connectionId: string, endpoint: strin
     Data: message,
   }).promise()
   .catch(error => errorWrapper(error, 'postToConnection', endpoint));
+}
+
+export function iamRoleStatementInvokeWebSockets(): IamRoleStatement {
+  return {
+    "Effect": "Allow",
+    "Action": 'execute-api:Invoke',
+    "Resource": 'arn:aws:execute-api:*:*:*',
+  }
 }

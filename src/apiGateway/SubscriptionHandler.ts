@@ -1,5 +1,5 @@
 import { sendWebSocketMessage } from './ApiGatewayWebSockets';
-import ObjectStore from '../objectStores/ObjectStore';
+import ObjectStore from '../objectStore/ObjectStore';
 
 export type CacheObject = Subscription | SubscriberMap;
 

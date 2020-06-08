@@ -2,9 +2,9 @@
 export * as log from './log';
 
 // Object Stores
-import ObjectStore, { Action, Reducer, actionHandler } from './objectStores/ObjectStore';
-import DynamoDbObjectStore from './objectStores/DynamoDbObjectStore';
-import S3ObjectStore from './objectStores/S3ObjectStore';
+import ObjectStore, { Action, Reducer, actionHandler } from './objectStore/ObjectStore';
+import DynamoDbObjectStore from './objectStore/DynamoDbObjectStore';
+import S3ObjectStore from './objectStore/S3ObjectStore';
 export {
   ObjectStore,
   Action,
@@ -12,6 +12,22 @@ export {
   actionHandler,
   DynamoDbObjectStore,
   S3ObjectStore
+}
+
+// DynamoDB
+import DynamoDbWrapper from './dynamoDb/DynamoDbWrapper';
+import ConditionExpression from './dynamoDb/ConditionExpression';
+import UpdateExpression from './dynamoDb/UpdateExpression';
+export {
+  DynamoDbWrapper,
+  ConditionExpression,
+  UpdateExpression,
+}
+
+// S3
+import S3Wrapper from './s3/S3Wrapper';
+export {
+  S3Wrapper,
 }
 
 // Auth
@@ -39,12 +55,10 @@ export {
 }
 
 // AWS Resources
-import { IamRoleStatement, IamPolicy, IamPolicyForPrincipal, IamRoleStatementsFunction, CloudFormation, CloudFormationFunction } from './AwsResource';
+import { IamRoleStatement, IamPolicy, IamPolicyForPrincipal, CloudFormation } from './AwsResource';
 export { 
   IamRoleStatement, 
   IamPolicy, 
-  IamPolicyForPrincipal, 
-  IamRoleStatementsFunction, 
-  CloudFormation, 
-  CloudFormationFunction 
+  IamPolicyForPrincipal,
+  CloudFormation,
 }

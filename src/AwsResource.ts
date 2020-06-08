@@ -18,14 +18,16 @@ export interface IamPolicyForPrincipal {
 export type CloudFormation = {
   Type: string,
   Properties: {
-    Name: string,
     [key: string]: any
   }
 }
 
-export interface IamRoleStatementsFunction {
-  (name: string): IamRoleStatement[];
-}
-export interface CloudFormationFunction {
-  (name: string): CloudFormation;
+export function buildArn(service: string, resource: string, region: string = 'us-east-1', accountId: string = '*'): string {
+  if (!service) {
+    throw new Error('aws service name required (e.g. dynamodb)');
+  }
+  if (!resource) {
+    throw new Error('aws resource name required (e.g. table/my-table-name)');
+  }
+  return `arn:aws:${service}:${region}:${accountId}:${resource}`;
 }
