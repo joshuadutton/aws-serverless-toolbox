@@ -1,17 +1,17 @@
-import { validateConditionExpression } from "./conditionExpressionValidation";
-import { ExpressionAttributeNameMap, ExpressionAttributeValueMap } from "aws-sdk/clients/dynamodb";
+import { validateConditionExpression } from './conditionExpressionValidation';
+import { ExpressionAttributeNameMap, ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb';
 
-enum ConditionExpressionType  {
+enum ConditionExpressionType {
   FILTER = 'FILTER',
-  KEY = 'KEY',
-};
+  KEY = 'KEY'
+}
 
 export type AttributeValue = any;
-export type Comparator = '=' | '<>' | '<'| '<=' | '>' | '>=';
-export type ExpressionAttributeType = 'name'|'value';
-export type ConjunctionOperator = 'AND'|'OR';
+export type Comparator = '=' | '<>' | '<' | '<=' | '>' | '>=';
+export type ExpressionAttributeType = 'name' | 'value';
+export type ConjunctionOperator = 'AND' | 'OR';
 export type NotOperator = 'NOT';
-export type ParensOperator = '('|')';
+export type ParensOperator = '(' | ')';
 export type ClauseOperator = ConjunctionOperator | NotOperator | ParensOperator;
 
 // http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html
@@ -37,7 +37,12 @@ export default class ConditionExpression {
     return undefined;
   }
 
-  constructor(type: ConditionExpressionType, expression = '', attributes = new ExpressionAttributeHelper(), leftArgumentName = '') {
+  constructor(
+    type: ConditionExpressionType,
+    expression = '',
+    attributes = new ExpressionAttributeHelper(),
+    leftArgumentName = ''
+  ) {
     this.type = type;
     this._expression = expression;
     this.attributes = attributes;
@@ -235,12 +240,12 @@ class ExpressionAttributeHelper {
   attributeValues: ExpressionAttributeValueMap = {};
 
   constructor(attributeNames = {}, attributeValues = {}) {
-    Object.keys(attributeNames).forEach((key) => this.attributeNames[key] = attributeNames[key]);
-    Object.keys(attributeValues).forEach((key) => this.attributeValues[key] = attributeValues[key]);
+    Object.keys(attributeNames).forEach((key) => (this.attributeNames[key] = attributeNames[key]));
+    Object.keys(attributeValues).forEach((key) => (this.attributeValues[key] = attributeValues[key]));
   }
 
   addAttributeName(name: string): String {
-    const keys = name.split('.').map(item => `#${item}`);
+    const keys = name.split('.').map((item) => `#${item}`);
     const names = name.split('.');
     for (const i in keys) {
       this.attributeNames[keys[i]] = names[i];

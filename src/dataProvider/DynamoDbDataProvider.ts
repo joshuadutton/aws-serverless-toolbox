@@ -1,4 +1,15 @@
-import DataProvider, { GetListOptions, DataProviderResponseRecords, ID, DataProviderResponseRecord, DataProviderResponseIds, DataProviderResponseId, Filter, sortItems, ResourceMap, Record } from './DataProvider';
+import DataProvider, {
+  GetListOptions,
+  DataProviderResponseRecords,
+  ID,
+  DataProviderResponseRecord,
+  DataProviderResponseIds,
+  DataProviderResponseId,
+  Filter,
+  sortItems,
+  ResourceMap,
+  Record
+} from './DataProvider';
 import DynamoDbWrapper, { Key } from '../dynamoDb/DynamoDbWrapper';
 import ConditionExpression from '../dynamoDb/ConditionExpression';
 
@@ -19,20 +30,23 @@ export default class DynamoDbDataProvider implements DataProvider {
     }
     return {
       data: items,
-      hasNextPage: false,
-    }
+      hasNextPage: false
+    };
   }
 
   async get(resource: string, id: ID): Promise<DataProviderResponseRecord> {
     const item = await this.db.get(this.tableForResource(resource), this.keyForResource(resource, id));
-    return { data: item }
+    return { data: item };
   }
-  
+
   async getMany(resource: string, ids: ID[]): Promise<DataProviderResponseRecords> {
-    const items = await this.db.batchGet(this.tableForResource(resource), ids.map(id => this.keyForResource(resource, id)));
-    return { 
+    const items = await this.db.batchGet(
+      this.tableForResource(resource),
+      ids.map((id) => this.keyForResource(resource, id))
+    );
+    return {
       data: items,
-      hasNextPage: false,
+      hasNextPage: false
     };
   }
 
@@ -51,49 +65,52 @@ export default class DynamoDbDataProvider implements DataProvider {
       item.createdAt = Date.now();
     }
     item.updatedAt = Date.now();
-  
+
     const mergedItem = { ...original, ...item, ...key };
     await this.db.put(tableName, mergedItem);
     return {
       data: mergedItem
-    }
+    };
   }
 
   async updateMany(resource: string, items: Record[]): Promise<DataProviderResponseRecords> {
     const tableName = this.tableForResource(resource);
-    const originals = await this.db.batchGet(tableName, items.map(item => this.keyForResource(resource, item.id)));
+    const originals = await this.db.batchGet(
+      tableName,
+      items.map((item) => this.keyForResource(resource, item.id))
+    );
     const originalMap = originals.reduce((map: any, item: Record) => {
       map[item.id] = item;
       return map;
     }, {});
 
-    const mergedItems = items.map(item => {
-      const original = originalMap[item.id]
+    const mergedItems = items.map((item) => {
+      const original = originalMap[item.id];
       if (!original || !original.createdAt) {
         item.createdAt = Date.now();
       }
       item.updatedAt = Date.now();
-      return {...original, ...item}
+      return { ...original, ...item };
     });
 
     await this.db.batchPut(tableName, mergedItems);
     return {
       data: mergedItems,
-      hasNextPage: false,
-    }
+      hasNextPage: false
+    };
   }
 
   async delete(resource: string, id: ID): Promise<DataProviderResponseId> {
     await this.db.delete(this.tableForResource(resource), this.keyForResource(resource, id));
     return {
       data: id
-    }
+    };
   }
 
   async deleteMany(resource: string, ids: ID[]): Promise<DataProviderResponseIds> {
-    const keys = ids.map(id => this.keyForResource(resource, id));
+    const keys = ids.map((id) => this.keyForResource(resource, id));
     await this.db.batchDelete(this.tableForResource(resource), keys);
-    return { data: ids }
+    return { data: ids };
   }
 
   private tableForResource(resource: string): string {
@@ -112,7 +129,7 @@ export default class DynamoDbDataProvider implements DataProvider {
     if (!attributes.length) {
       return undefined;
     }
-  
+
     const addEqualsOrIsInList = (expression, value) => {
       expression = ConditionExpression.filterWhere(attribute);
       if (Array.isArray(value)) {
@@ -120,7 +137,7 @@ export default class DynamoDbDataProvider implements DataProvider {
       }
       return expression.equals(value);
     };
-  
+
     let attribute = attributes[0];
     let value = filter[attribute];
     let expression = ConditionExpression.filterWhere(attribute);
@@ -133,14 +150,14 @@ export default class DynamoDbDataProvider implements DataProvider {
     }
     return expression;
   }
-  
+
   private async queryOrScan(resource: string, filter?: Filter): Promise<Record[]> {
     const table = this.tableForResource(resource);
     const { id, ...restFilter } = filter || {};
     const filterExpression = this.createFilterExpression(restFilter);
     if (id) {
       const keyExpression = ConditionExpression.whereKey('id').equals(id);
-      return this.db.query(table, keyExpression, filterExpression)
+      return this.db.query(table, keyExpression, filterExpression);
     }
     return this.db.scan(table, filterExpression);
   }

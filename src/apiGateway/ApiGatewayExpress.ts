@@ -8,7 +8,7 @@ import { Server } from 'http';
 import * as log from '../log';
 import HttpError from './HttpError';
 
-export type RouterMap = { [path: string]: express.Router }
+export type RouterMap = { [path: string]: express.Router };
 
 export default class ApiGatewayExpress {
   readonly app = express();
@@ -29,7 +29,7 @@ export default class ApiGatewayExpress {
   attachUserAuthMiddleware(request: any, response: Response, next: NextFunction) {
     const principalId = request.apiGateway?.event?.requestContext?.authorizer?.principalId;
     if (principalId) {
-      request.auth = { user: { id: principalId }};
+      request.auth = { user: { id: principalId } };
     }
     next();
   }
@@ -41,7 +41,7 @@ export default class ApiGatewayExpress {
     this.app.use(log.accessLogMiddleware);
     this.app.use(this.attachUserAuthMiddleware);
 
-    Object.keys(this.routerMap).forEach(path => {
+    Object.keys(this.routerMap).forEach((path) => {
       this.app.use(path, this.routerMap[path]);
     });
 
@@ -53,16 +53,12 @@ export default class ApiGatewayExpress {
     log.error(error);
     const statusCode = error.statusCode || 500;
     const message = error.message || 'Unexpected Server Error';
-    response
-      .status(statusCode)
-      .json({ statusCode, message });
+    response.status(statusCode).json({ statusCode, message });
   }
 
   notFoundMiddleware(request: Request, response: Response, next: NextFunction) {
     const statusCode = 404;
-    response
-      .status(statusCode)
-      .json({ statusCode, message: 'Not Found' });
+    response.status(statusCode).json({ statusCode, message: 'Not Found' });
   }
 
   handler(event: APIGatewayProxyEvent, context: Context): void {

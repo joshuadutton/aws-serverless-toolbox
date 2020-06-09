@@ -1,18 +1,23 @@
 import { ExpressionAttributeNameMap, ExpressionAttributeValueMap } from 'aws-sdk/clients/dynamodb';
 
-
-
 // http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html
 export default class UpdateExpression {
   private setClause?: string;
-  private removeClause? : string;
-  private addClause? : string;
-  private deleteClause? : string;
+  private removeClause?: string;
+  private addClause?: string;
+  private deleteClause?: string;
 
   readonly attributeNames: ExpressionAttributeNameMap;
   readonly attributeValues: ExpressionAttributeValueMap;
 
-  constructor(attributeNames: ExpressionAttributeNameMap = {}, attributeValues: ExpressionAttributeValueMap = {}, setClause?: string, removeClause?: string, addClause?: string, deleteClause?: string) {
+  constructor(
+    attributeNames: ExpressionAttributeNameMap = {},
+    attributeValues: ExpressionAttributeValueMap = {},
+    setClause?: string,
+    removeClause?: string,
+    addClause?: string,
+    deleteClause?: string
+  ) {
     this.attributeNames = attributeNames;
     this.attributeValues = attributeValues;
     this.setClause = setClause;
@@ -23,10 +28,18 @@ export default class UpdateExpression {
 
   get expression(): string {
     const clauses = Array<string>();
-    if (this.setClause)    { clauses.push(this.setClause); }
-    if (this.removeClause) { clauses.push(this.removeClause); }
-    if (this.addClause)    { clauses.push(this.addClause); }
-    if (this.deleteClause) { clauses.push(this.deleteClause); }
+    if (this.setClause) {
+      clauses.push(this.setClause);
+    }
+    if (this.removeClause) {
+      clauses.push(this.removeClause);
+    }
+    if (this.addClause) {
+      clauses.push(this.addClause);
+    }
+    if (this.deleteClause) {
+      clauses.push(this.deleteClause);
+    }
     return clauses.join(' ');
   }
 
@@ -43,7 +56,9 @@ export default class UpdateExpression {
     if (attributeToCheck) {
       checkPlaceholder = this.addAttributeName(attributeToCheck);
     }
-    return this.copyAddingSetClause(`${placeholder} = if_not_exists(${checkPlaceholder}, ${this.addAttributeValue(attribute, to)})`);
+    return this.copyAddingSetClause(
+      `${placeholder} = if_not_exists(${checkPlaceholder}, ${this.addAttributeValue(attribute, to)})`
+    );
   }
   static setIfNotExists(attribute: string, to: any, attributeToCheck?: string): UpdateExpression {
     return new UpdateExpression().setIfNotExists(attribute, to, attributeToCheck);
@@ -91,29 +106,57 @@ export default class UpdateExpression {
     return key;
   }
 
-  private addAttributeValue(attributeName: string, value: any, id: number = 0): string { 
+  private addAttributeValue(attributeName: string, value: any, id: number = 0): string {
     const key = `:${attributeName}${id}`;
     if (this.attributeValues[key]) {
-      return this.addAttributeValue(attributeName, value, id+1);
+      return this.addAttributeValue(attributeName, value, id + 1);
     }
     this.attributeValues[key] = value;
     return key;
   }
 
   private copyAddingSetClause(clause: string) {
-    return new UpdateExpression(this.attributeNames, this.attributeValues, this.buildClause('SET', clause, this.setClause), this.removeClause, this.addClause, this.deleteClause);
+    return new UpdateExpression(
+      this.attributeNames,
+      this.attributeValues,
+      this.buildClause('SET', clause, this.setClause),
+      this.removeClause,
+      this.addClause,
+      this.deleteClause
+    );
   }
 
   private copyAddingRemoveClause(clause: string) {
-    return new UpdateExpression(this.attributeNames, this.attributeValues, this.setClause, this.buildClause('REMOVE', clause, this.removeClause), this.addClause, this.deleteClause);
+    return new UpdateExpression(
+      this.attributeNames,
+      this.attributeValues,
+      this.setClause,
+      this.buildClause('REMOVE', clause, this.removeClause),
+      this.addClause,
+      this.deleteClause
+    );
   }
 
   private copyAddingAddClause(clause: string) {
-    return new UpdateExpression(this.attributeNames, this.attributeValues, this.setClause, this.removeClause, this.buildClause('ADD', clause, this.addClause), this.deleteClause);
+    return new UpdateExpression(
+      this.attributeNames,
+      this.attributeValues,
+      this.setClause,
+      this.removeClause,
+      this.buildClause('ADD', clause, this.addClause),
+      this.deleteClause
+    );
   }
 
   private copyAddingDeleteClause(clause: string) {
-    return new UpdateExpression(this.attributeNames, this.attributeValues, this.setClause, this.removeClause, this.addClause, this.buildClause('DELETE', clause, this.deleteClause));
+    return new UpdateExpression(
+      this.attributeNames,
+      this.attributeValues,
+      this.setClause,
+      this.removeClause,
+      this.addClause,
+      this.buildClause('DELETE', clause, this.deleteClause)
+    );
   }
 
   private buildClause(type: string, newPart: string, existingPart?: string) {

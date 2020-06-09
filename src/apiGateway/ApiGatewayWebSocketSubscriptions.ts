@@ -27,10 +27,10 @@ export default class ApiGatewayWebSocketSubscriptions {
     } else if (domain.includes('amazonaws.com')) {
       endpoint = `https://${domain}/${stage}`;
     }
-  
+
     try {
       const userId = await this.auth.verifyBearerToken(headers['Authorization'], ['self']);
-      log.logApiGatewayWebsocket(routeKey, endpoint, connectionId, userId)
+      log.logApiGatewayWebsocket(routeKey, endpoint, connectionId, userId);
       switch (routeKey) {
         case '$connect': {
           const subscriber = new WebSocketSubscriber(connectionId, endpoint);

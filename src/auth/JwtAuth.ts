@@ -19,7 +19,7 @@ export default class JwtAuth implements Auth {
   private readonly digest = 'sha256';
   private readonly saltLength = 64;
   private readonly iterations = 10000;
-  private readonly signingKeyId = '927cde40-41e7-45b1-861a-864f6d6ec269' // uuid to not conflict with other ids
+  private readonly signingKeyId = '927cde40-41e7-45b1-861a-864f6d6ec269'; // uuid to not conflict with other ids
   private signingSecretAsPersistedPassword?: PersistedPassword; // stored as hash in PersistedPassword to look like any other entry in password table
   private readonly passwordStore: ObjectStore<PersistedPassword>;
 
@@ -46,7 +46,7 @@ export default class JwtAuth implements Auth {
       hash: crypto.randomBytes(this.hashLength).toString('base64'),
       iterations: this.iterations,
       scopes: ['user']
-    }
+    };
     await this.passwordStore.put(this.signingKeyId, this.signingSecretAsPersistedPassword);
     return this.signingSecretAsPersistedPassword.hash;
   }
@@ -58,11 +58,11 @@ export default class JwtAuth implements Auth {
         if (error) {
           reject(error);
         } else {
-          resolve({ 
-            salt, 
-            scopes, 
-            iterations: this.iterations, 
-            hash: hash.toString('base64'),
+          resolve({
+            salt,
+            scopes,
+            iterations: this.iterations,
+            hash: hash.toString('base64')
           });
         }
       });
@@ -71,13 +71,20 @@ export default class JwtAuth implements Auth {
 
   private async verifyPersistedPassword(persistedPassword: PersistedPassword, password: string): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
-      crypto.pbkdf2(password, persistedPassword.salt, persistedPassword.iterations, this.hashLength, this.digest, (error, hash) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(persistedPassword.hash === hash.toString('base64'));
+      crypto.pbkdf2(
+        password,
+        persistedPassword.salt,
+        persistedPassword.iterations,
+        this.hashLength,
+        this.digest,
+        (error, hash) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(persistedPassword.hash === hash.toString('base64'));
+          }
         }
-      });
+      );
     });
   }
 
@@ -85,10 +92,10 @@ export default class JwtAuth implements Auth {
     const signingSecret = await this.getSigningSecret();
     const jwtData = {
       sub: id,
-      scopes,
-    }
+      scopes
+    };
     return jwt.sign(jwtData, signingSecret, { expiresIn: '1h' });
-  } 
+  }
 
   async verifyToken(token: Token, scopes: string[]): Promise<string> {
     const signingSecret = await this.getSigningSecret();
@@ -105,10 +112,9 @@ export default class JwtAuth implements Auth {
         return Promise.reject('invalid scope');
       }
       return decoded.sub;
-    } catch(error) {
+    } catch (error) {
       return Promise.reject(error);
     }
-    
   }
 
   async addPassword(id: string, password: string, scopes: string[]): Promise<Token> {
@@ -145,7 +151,7 @@ export default class JwtAuth implements Auth {
       }
       const token = bearerToken.substring(7); // remove "bearer " from token
       return this.verifyToken(token, scopes);
-    } catch(error) {
+    } catch (error) {
       log.error(error);
       return Promise.reject(new HttpError(403, 'unauthorized'));
     }
@@ -156,7 +162,7 @@ export default class JwtAuth implements Auth {
       const bearerToken = event.authorizationToken;
       const sub = await this.verifyBearerToken(bearerToken, scopes);
       return this.generateIamPolicy({ id: sub }, 'Allow', event.methodArn);
-    } catch(error) {
+    } catch (error) {
       log.error(error);
       return this.generateIamPolicy({}, 'Deny', event.methodArn);
       // TODO: the following doesn't work with serverless-offline. Need to submit an issue/PR
@@ -169,13 +175,15 @@ export default class JwtAuth implements Auth {
       principalId: userInfo.id,
       policyDocument: {
         Version: '2012-10-17',
-        Statement: [{
-          Effect: effect,
-          Action: 'execute-api:Invoke',
-          Resource: resource,
-        }],
+        Statement: [
+          {
+            Effect: effect,
+            Action: 'execute-api:Invoke',
+            Resource: resource
+          }
+        ]
       },
-      context: userInfo,
+      context: userInfo
     };
-  };
+  }
 }

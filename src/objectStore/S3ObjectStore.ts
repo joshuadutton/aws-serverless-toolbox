@@ -19,14 +19,13 @@ export default class S3ObjectStore<T> implements ObjectStore<T> {
   async get(id: string): Promise<T | undefined> {
     return this.s3.getJson(this.bucketName, this.s3KeyForId(id));
   }
-  
+
   async put(id: string, value: T): Promise<T> {
     if (!value) {
       return Promise.reject(new Error('Value is required'));
     }
     const putValue = { ...value, id };
-    return this.s3.putJson(this.bucketName, this.s3KeyForId(id), putValue)
-    .then(() => putValue);
+    return this.s3.putJson(this.bucketName, this.s3KeyForId(id), putValue).then(() => putValue);
   }
 
   async delete(id: string) {

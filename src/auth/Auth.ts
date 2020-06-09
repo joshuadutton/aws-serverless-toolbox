@@ -1,7 +1,7 @@
-import { IamPolicyForPrincipal } from "../AwsResource";
+import { IamPolicyForPrincipal } from '../AwsResource';
 
 export interface ApiGatewayAuthorizerTokenEvent {
-  type: "TOKEN";
+  type: 'TOKEN';
   methodArn: string;
   authorizationToken: string;
 }

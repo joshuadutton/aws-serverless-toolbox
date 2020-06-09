@@ -1,8 +1,8 @@
 export type ID = string | number;
 
 export interface Record {
-  id: ID,
-  [field: string]: any,
+  id: ID;
+  [field: string]: any;
 }
 
 export interface Pagination {
@@ -12,40 +12,40 @@ export interface Pagination {
 
 export interface Sort {
   field: string;
-  order: "ASC" | "DESC";
+  order: 'ASC' | 'DESC';
 }
 
 export interface Filter {
-  [key: string]: any
+  [key: string]: any;
 }
 
 export interface GetListOptions {
   ids?: ID[];
-  sort?: Sort,
-  pagination?: Pagination,
-  filter?: Filter,
+  sort?: Sort;
+  pagination?: Pagination;
+  filter?: Filter;
 }
 
 export interface DataProviderResponseRecord {
-  data: Record,
+  data: Record;
 }
 
 export interface DataProviderResponseRecords {
-  data: Record[],
-  endCursor?: string,
-  hasNextPage: boolean
+  data: Record[];
+  endCursor?: string;
+  hasNextPage: boolean;
 }
 
 export interface DataProviderResponseId {
-  data: ID,
+  data: ID;
 }
 
 export interface DataProviderResponseIds {
-  data: ID[],
+  data: ID[];
 }
 
 export interface ResourceMap {
-  [resource: string]: string
+  [resource: string]: string;
 }
 
 // follows the patterns here except for the pagination model: https://marmelab.com/react-admin/DataProviders.html
@@ -82,7 +82,7 @@ export function sortItems(items: any[], sort: Sort): any[] {
 }
 
 export function filterItems(items: any[], filter: Filter): any[] {
-  return items.filter(item => {
+  return items.filter((item) => {
     const keys = Object.keys(filter);
     let matchesAll = true;
     for (const key of keys) {

@@ -1,7 +1,7 @@
-import { DynamoDB, AWSError } from "aws-sdk";
+import { DynamoDB, AWSError } from 'aws-sdk';
 
 import ObjectStore, { Action, Reducer, actionHandler } from './ObjectStore';
-import DynamoDbWrapper from "../dynamoDb/DynamoDbWrapper";
+import DynamoDbWrapper from '../dynamoDb/DynamoDbWrapper';
 
 export default class DynamoObjectDBStore<T> implements ObjectStore<T> {
   private readonly db: DynamoDbWrapper;
@@ -24,7 +24,7 @@ export default class DynamoObjectDBStore<T> implements ObjectStore<T> {
   async get(id: string): Promise<T | undefined> {
     return this.db.get(this.tableName, { id: id });
   }
-  
+
   async put(id: string, item: T): Promise<T> {
     const putItem = { ...item, id };
     if (this.timeToLiveSeconds) {

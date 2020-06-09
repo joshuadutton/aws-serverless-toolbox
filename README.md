@@ -1,5 +1,5 @@
-
 ## Install notes:
+
 - AWS SDK
 
 ## Wish List
@@ -14,12 +14,14 @@
 - [ ] Aurora PostreSQL wrapper
 - [ ] Aurora PostreSQL Object Store
 - [ ] Aurora PostreSQL Data Provider
+- [ ] Managed Cassandra
 
 ## Object Stores
 
-For the purpose of working with single objects. Supports `get`, `put`, and `delete`. Also supports custom reducers for updates. 
+For the purpose of working with single objects. Supports `get`, `put`, and `delete`. Also supports custom reducers for updates.
 
 #### Interface:
+
 ```TypeScript
 export default interface ObjectStore<T> {
   get(id: string): Promise<T | undefined>;
@@ -30,6 +32,7 @@ export default interface ObjectStore<T> {
 ```
 
 #### Store types
+
 - S3
 - DynamoDB
 - Aurora (Coming Soon)

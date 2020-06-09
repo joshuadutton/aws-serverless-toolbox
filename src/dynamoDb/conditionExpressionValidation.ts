@@ -84,10 +84,11 @@ export function validateConditionExpression(expression: string): boolean {
   // condition AND condition
   const andEndingWithBetweenConditionRegex = /(.+) AND (#\S+ BETWEEN [#:]\S+ AND [#:]\S+)$/;
   const andEndingWithBetweenConditionFound = expression.match(andEndingWithBetweenConditionRegex);
-  if (andEndingWithBetweenConditionFound && andEndingWithBetweenConditionFound[1]
-    && andEndingWithBetweenConditionFound[2]) {
-    return validateConditionExpression(andEndingWithBetweenConditionFound[1])
-      && validateConditionExpression(andEndingWithBetweenConditionFound[2]);
+  if (andEndingWithBetweenConditionFound && andEndingWithBetweenConditionFound[1] && andEndingWithBetweenConditionFound[2]) {
+    return (
+      validateConditionExpression(andEndingWithBetweenConditionFound[1]) &&
+      validateConditionExpression(andEndingWithBetweenConditionFound[2])
+    );
   }
   const andRegex = /(.+) AND (.+)/;
   const andFound = expression.match(andRegex);

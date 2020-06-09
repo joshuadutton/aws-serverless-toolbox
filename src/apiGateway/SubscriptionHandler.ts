@@ -4,8 +4,8 @@ import ObjectStore from '../objectStore/ObjectStore';
 export type CacheObject = Subscription | SubscriberMap;
 
 export enum SubscriberType {
-  WebSocket = "WebSocket", 
-  PushNotification = "PushNotification"
+  WebSocket = 'WebSocket',
+  PushNotification = 'PushNotification'
 }
 
 const GONE_EXCEPTION_STATUS_CODE = 410;
@@ -26,7 +26,7 @@ export class WebSocketSubscriber {
 export class PushNotificationSubscriber {
   readonly type = SubscriberType.PushNotification;
   readonly id: string;
-  
+
   constructor(id: string) {
     this.id = id;
   }
@@ -86,7 +86,10 @@ export default class SubscriptionHandler {
       const thingId = subscriberMap.thingId;
       const subscription = await this.getSubscriptionForThing(thingId);
       if (subscription) {
-        subscription.subscribers = subscription.subscribers.splice(subscription.subscribers.findIndex(subscriber => subscriber.id === thingId), 1);
+        subscription.subscribers = subscription.subscribers.splice(
+          subscription.subscribers.findIndex((subscriber) => subscriber.id === thingId),
+          1
+        );
         if (subscription.subscribers.length === 0) {
           await this.subscriptionStore.delete(thingId);
         } else {
@@ -101,27 +104,25 @@ export default class SubscriptionHandler {
     const subscription = await this.getSubscriptionForThing(thingId);
 
     if (subscription) {
-      const promises = subscription.subscribers.map(async subscriber => {
+      const promises = subscription.subscribers.map(async (subscriber) => {
         if (subscriber instanceof WebSocketSubscriber) {
           subscriber.endpoint;
         }
-        switch(subscriber.type) {
+        switch (subscriber.type) {
           case SubscriberType.WebSocket: {
-            return sendWebSocketMessage(subscriber.id, subscriber.endpoint, JSON.stringify(message))
-              .catch(error => {
-                if (error.errno === 'ECONNREFUSED' || error.statusCode === GONE_EXCEPTION_STATUS_CODE) {
-                  return this.unsubscribe(subscriber.id);
-                }
-                throw error;
-              });
+            return sendWebSocketMessage(subscriber.id, subscriber.endpoint, JSON.stringify(message)).catch((error) => {
+              if (error.errno === 'ECONNREFUSED' || error.statusCode === GONE_EXCEPTION_STATUS_CODE) {
+                return this.unsubscribe(subscriber.id);
+              }
+              throw error;
+            });
           }
           case SubscriberType.PushNotification: {
             return Promise.reject('PushNotifications not implemented yet');
           }
         }
-        
       });
-    
+
       return Promise.all(promises);
     }
   }

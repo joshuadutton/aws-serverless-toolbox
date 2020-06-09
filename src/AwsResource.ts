@@ -1,27 +1,27 @@
-export type IamRoleStatement = { 
-  Sid?: string; 
-  Effect: "Allow" | "Deny";
+export type IamRoleStatement = {
+  Sid?: string;
+  Effect: 'Allow' | 'Deny';
   Action: string | string[];
   Resource: string | string[];
-}
+};
 
 export interface IamPolicy {
-  Version: string,
-  Statement: IamRoleStatement[]
+  Version: string;
+  Statement: IamRoleStatement[];
 }
 
 export interface IamPolicyForPrincipal {
-  principalId: string,
-  policyDocument: IamPolicy,
-  context: any,
+  principalId: string;
+  policyDocument: IamPolicy;
+  context: any;
 }
 
 export type CloudFormation = {
-  Type: string,
+  Type: string;
   Properties: {
-    [key: string]: any
-  }
-}
+    [key: string]: any;
+  };
+};
 
 export function buildArn(service: string, resource: string, region: string = 'us-east-1', accountId: string = '*'): string {
   if (!service) {

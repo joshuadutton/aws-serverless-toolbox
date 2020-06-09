@@ -7,10 +7,10 @@ export default interface ObjectStore<T> {
 
 // Follows Flux Standard Actions (see https://github.com/redux-utilities/flux-standard-action)
 export interface Action {
-  type: string,
-  payload?: { [key: string]: any },
-  meta?: { [key: string]: any },
-  error?: boolean 
+  type: string;
+  payload?: { [key: string]: any };
+  meta?: { [key: string]: any };
+  error?: boolean;
 }
 
 // pure function that produces new state (see https://redux.js.org/basics/reducers/#handling-actions)
@@ -25,7 +25,7 @@ export async function actionHandler<T>(store: ObjectStore<T>, id: string, action
     } else {
       return Promise.reject(`no item found with id ${id}`);
     }
-  } catch(error) {
+  } catch (error) {
     return Promise.reject(error);
   }
 }
