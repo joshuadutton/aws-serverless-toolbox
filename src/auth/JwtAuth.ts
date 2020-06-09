@@ -5,7 +5,7 @@ import * as log from '../log';
 import HttpError from '../apiGateway/HttpError';
 import { IamPolicyForPrincipal } from '../AwsResource';
 import { Auth, Token, ApiGatewayAuthorizerTokenEvent } from './Auth';
-import ObjectStore from '../objectStores/ObjectStore';
+import ObjectStore from '../objectStore/ObjectStore';
 
 export interface PersistedPassword {
   salt: string;

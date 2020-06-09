@@ -14,49 +14,7 @@ export type NotOperator = 'NOT';
 export type ParensOperator = '('|')';
 export type ClauseOperator = ConjunctionOperator | NotOperator | ParensOperator;
 
-
-
-export interface QueryExpression {
-  readonly keyExpression: string;
-  readonly filterExpression?: string;
-  readonly attributeNames: ExpressionAttributeNameMap;
-  readonly attributeValues: ExpressionAttributeValueMap;
-}
-
 // http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html
-
-class ExpressionAttributeHelper {
-  attributeNames: ExpressionAttributeNameMap = {};
-  attributeValues: ExpressionAttributeValueMap = {};
-
-  constructor(attributeNames = {}, attributeValues = {}) {
-    Object.keys(attributeNames).forEach((key) => this.attributeNames[key] = attributeNames[key]);
-    Object.keys(attributeValues).forEach((key) => this.attributeValues[key] = attributeValues[key]);
-  }
-
-  addAttributeName(name: string): String {
-    const keys = name.split('.').map(item => `#${item}`);
-    const names = name.split('.');
-    for (const i in keys) {
-      this.attributeNames[keys[i]] = names[i];
-    }
-    return keys.join('.');
-  }
-
-  addAttributeValue(attributeName: string, value: AttributeValue, id: number = 0): string {
-    const key = `:${attributeName.replace(/\./g, '_')}${id}`;
-    if (this.attributeValues[key]) {
-      return this.addAttributeValue(attributeName, value, id + 1);
-    }
-    this.attributeValues[key] = value;
-    return key;
-  }
-
-  copy(): ExpressionAttributeHelper {
-    return new ExpressionAttributeHelper(this.attributeNames, this.attributeValues);
-  }
-}
-
 export default class ConditionExpression {
   type: ConditionExpressionType;
   private _expression: string;
@@ -77,9 +35,6 @@ export default class ConditionExpression {
       return this.attributes.attributeValues;
     }
     return undefined;
-  }
-  get keyExpression(): string {
-    return this.expression;
   }
 
   constructor(type: ConditionExpressionType, expression = '', attributes = new ExpressionAttributeHelper(), leftArgumentName = '') {
@@ -273,4 +228,36 @@ export default class ConditionExpression {
       throw new Error(`Expression clause required before "${context}"`);
     }
   }
-};
+}
+
+class ExpressionAttributeHelper {
+  attributeNames: ExpressionAttributeNameMap = {};
+  attributeValues: ExpressionAttributeValueMap = {};
+
+  constructor(attributeNames = {}, attributeValues = {}) {
+    Object.keys(attributeNames).forEach((key) => this.attributeNames[key] = attributeNames[key]);
+    Object.keys(attributeValues).forEach((key) => this.attributeValues[key] = attributeValues[key]);
+  }
+
+  addAttributeName(name: string): String {
+    const keys = name.split('.').map(item => `#${item}`);
+    const names = name.split('.');
+    for (const i in keys) {
+      this.attributeNames[keys[i]] = names[i];
+    }
+    return keys.join('.');
+  }
+
+  addAttributeValue(attributeName: string, value: AttributeValue, id: number = 0): string {
+    const key = `:${attributeName.replace(/\./g, '_')}${id}`;
+    if (this.attributeValues[key]) {
+      return this.addAttributeValue(attributeName, value, id + 1);
+    }
+    this.attributeValues[key] = value;
+    return key;
+  }
+
+  copy(): ExpressionAttributeHelper {
+    return new ExpressionAttributeHelper(this.attributeNames, this.attributeValues);
+  }
+}

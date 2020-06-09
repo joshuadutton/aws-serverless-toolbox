@@ -1,6 +1,7 @@
 import { S3, AWSError } from 'aws-sdk';
 import { IamRoleStatement, CloudFormation } from '../AwsResource';
 
+// https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html
 export default class S3Wrapper {
   private readonly s3: S3;
 

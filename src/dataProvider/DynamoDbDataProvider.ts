@@ -1,10 +1,6 @@
-import DataProvider, { GetListOptions, DataProviderResponseRecords, ID, DataProviderResponseRecord, DataProviderResponseIds, DataProviderResponseId, Filter, sortItems } from './DataProvider';
+import DataProvider, { GetListOptions, DataProviderResponseRecords, ID, DataProviderResponseRecord, DataProviderResponseIds, DataProviderResponseId, Filter, sortItems, ResourceMap, Record } from './DataProvider';
 import DynamoDbWrapper, { Key } from '../dynamoDb/DynamoDbWrapper';
 import ConditionExpression from '../dynamoDb/ConditionExpression';
-
-export interface ResourceMap {
-  [resource: string]: string
-}
 
 export default class DynamoDbDataProvider implements DataProvider {
   private readonly db: DynamoDbWrapper;
@@ -28,28 +24,28 @@ export default class DynamoDbDataProvider implements DataProvider {
   }
 
   async get(resource: string, id: ID): Promise<DataProviderResponseRecord> {
-    const item = await this.db.get(this.tableNameForResource(resource), this.keyForResource(resource, id));
+    const item = await this.db.get(this.tableForResource(resource), this.keyForResource(resource, id));
     return { data: item }
   }
   
   async getMany(resource: string, ids: ID[]): Promise<DataProviderResponseRecords> {
-    const items = await this.db.batchGet(this.tableNameForResource(resource), ids.map(id => this.keyForResource(resource, id)));
+    const items = await this.db.batchGet(this.tableForResource(resource), ids.map(id => this.keyForResource(resource, id)));
     return { 
       data: items,
       hasNextPage: false,
     };
   }
 
-  async create(resource: string, item: any): Promise<DataProviderResponseRecord> {
+  async create(resource: string, item: Record): Promise<DataProviderResponseRecord> {
     item.createdAt = Date.now();
     item.updatedAt = Date.now();
-    await this.db.put(this.tableNameForResource(resource), item, `attribute_not_exists(id)`);
+    await this.db.put(this.tableForResource(resource), item, `attribute_not_exists(id)`);
     return { data: item };
   }
 
-  async update(resource: string, item: any): Promise<DataProviderResponseRecord> {
+  async update(resource: string, item: Record): Promise<DataProviderResponseRecord> {
     const key = this.keyForResource(resource, item.id);
-    const tableName = this.tableNameForResource(resource);
+    const tableName = this.tableForResource(resource);
     const original = await this.db.get(tableName, key);
     if (!original || !original.createdAt) {
       item.createdAt = Date.now();
@@ -63,10 +59,10 @@ export default class DynamoDbDataProvider implements DataProvider {
     }
   }
 
-  async updateMany(resource: string, items: any[]): Promise<DataProviderResponseRecords> {
-    const tableName = this.tableNameForResource(resource);
+  async updateMany(resource: string, items: Record[]): Promise<DataProviderResponseRecords> {
+    const tableName = this.tableForResource(resource);
     const originals = await this.db.batchGet(tableName, items.map(item => this.keyForResource(resource, item.id)));
-    const originalMap = originals.reduce((map, item) => {
+    const originalMap = originals.reduce((map: any, item: Record) => {
       map[item.id] = item;
       return map;
     }, {});
@@ -88,7 +84,7 @@ export default class DynamoDbDataProvider implements DataProvider {
   }
 
   async delete(resource: string, id: ID): Promise<DataProviderResponseId> {
-    await this.db.delete(this.tableNameForResource(resource), this.keyForResource(resource, id));
+    await this.db.delete(this.tableForResource(resource), this.keyForResource(resource, id));
     return {
       data: id
     }
@@ -96,11 +92,11 @@ export default class DynamoDbDataProvider implements DataProvider {
 
   async deleteMany(resource: string, ids: ID[]): Promise<DataProviderResponseIds> {
     const keys = ids.map(id => this.keyForResource(resource, id));
-    await this.db.batchDelete(this.tableNameForResource(resource), keys);
+    await this.db.batchDelete(this.tableForResource(resource), keys);
     return { data: ids }
   }
 
-  private tableNameForResource(resource: string): string {
+  private tableForResource(resource: string): string {
     return this.resourceMap[resource];
   }
 
@@ -138,8 +134,8 @@ export default class DynamoDbDataProvider implements DataProvider {
     return expression;
   }
   
-  private async queryOrScan(resource: string, filter?: Filter): Promise<any[]> {
-    const table = this.tableNameForResource(resource);
+  private async queryOrScan(resource: string, filter?: Filter): Promise<Record[]> {
+    const table = this.tableForResource(resource);
     const { id, ...restFilter } = filter || {};
     const filterExpression = this.createFilterExpression(restFilter);
     if (id) {

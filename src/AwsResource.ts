@@ -1,7 +1,8 @@
 export type IamRoleStatement = { 
-  Effect: "Allow" | "Deny",
-  Action: string | string[],
-  Resource: string | string[]
+  Sid?: string; 
+  Effect: "Allow" | "Deny";
+  Action: string | string[];
+  Resource: string | string[];
 }
 
 export interface IamPolicy {

@@ -23,17 +23,11 @@ export interface ApiGatewayWebSocketEvent {
   isBase64Encoded: boolean;
 }
 
-function errorWrapper(error: AWSError, action: string, endpoint: string): Promise<any> {
-  // AWS doesn't namespace errors
-  error.code = `ApiGatewayManagementApi:${error.code}`;
-  error.message = `ApiGatewayManagementApi:${action}:${endpoint} ${error.message}`;
-  return Promise.reject(error);
-}
-
 export interface ApiGatewayWebSocketResult {
   statusCode: number;
 }
 
+// https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApiGatewayManagementApi.html
 export async function sendWebSocketMessage(connectionId: string, endpoint: string, message: any): Promise<any> {
   const apiGateway = new ApiGatewayManagementApi({ endpoint, apiVersion: '2029' });
 
@@ -50,4 +44,11 @@ export function iamRoleStatementInvokeWebSockets(): IamRoleStatement {
     "Action": 'execute-api:Invoke',
     "Resource": 'arn:aws:execute-api:*:*:*',
   }
+}
+
+function errorWrapper(error: AWSError, action: string, endpoint: string): Promise<any> {
+  // AWS doesn't namespace errors
+  error.code = `ApiGatewayManagementApi:${error.code}`;
+  error.message = `ApiGatewayManagementApi:${action}:${endpoint} ${error.message}`;
+  return Promise.reject(error);
 }

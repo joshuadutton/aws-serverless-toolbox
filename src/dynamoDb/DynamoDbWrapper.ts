@@ -5,6 +5,8 @@ import { buildArn, CloudFormation, IamRoleStatement } from "../AwsResource";
 
 export type Key = DocumentClient.Key;
 
+// https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html
+// https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html
 export default class DynamoDbWrapper {
   private readonly ddb: DynamoDB;
   private readonly db: DocumentClient;
@@ -44,7 +46,7 @@ export default class DynamoDbWrapper {
     let attributeNames: ExpressionAttributeNameMap = {};
     let attributeValues: ExpressionAttributeValueMap = {};
     if (keyExpression) {
-      params.KeyConditionExpression = keyExpression.keyExpression;
+      params.KeyConditionExpression = keyExpression.expression;
       if (keyExpression.attributeNames) {
         attributeNames = keyExpression.attributeNames;
         params.ExpressionAttributeNames = attributeNames;

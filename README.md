@@ -2,6 +2,19 @@
 ## Install notes:
 - AWS SDK
 
+## Wish List
+
+- [ ] Cognito Auth
+- [ ] Aurora MySQL wrapper
+- [ ] Aurora MySQL Object Store
+- [ ] Aurora MySQL Data Provider
+- [ ] SNS subscriber (w/ mobile push notifications)
+- [ ] GraphQL object store interface
+- [ ] GraphQL data provider interface
+- [ ] Aurora PostreSQL wrapper
+- [ ] Aurora PostreSQL Object Store
+- [ ] Aurora PostreSQL Data Provider
+
 ## Object Stores
 
 For the purpose of working with single objects. Supports `get`, `put`, and `delete`. Also supports custom reducers for updates. 
