@@ -1,3 +1,7 @@
+# AWS Serverless Toolbox
+
+This is still a work in progress. Some of the stuff works well, but documentation is currently lacking. I am actively changing things, so use at your own risk.
+
 ## Install notes:
 
 - AWS SDK
