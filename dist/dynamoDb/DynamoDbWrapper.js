@@ -13,41 +13,6 @@ var __assign =
       };
     return __assign.apply(this, arguments);
   };
-var __createBinding =
-  (this && this.__createBinding) ||
-  (Object.create
-    ? function (o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        Object.defineProperty(o, k2, {
-          enumerable: true,
-          get: function () {
-            return m[k];
-          }
-        });
-      }
-    : function (o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        o[k2] = m[k];
-      });
-var __setModuleDefault =
-  (this && this.__setModuleDefault) ||
-  (Object.create
-    ? function (o, v) {
-        Object.defineProperty(o, 'default', { enumerable: true, value: v });
-      }
-    : function (o, v) {
-        o['default'] = v;
-      });
-var __importStar =
-  (this && this.__importStar) ||
-  function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null)
-      for (var k in mod) if (k !== 'default' && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-  };
 var __awaiter =
   (this && this.__awaiter) ||
   function (thisArg, _arguments, P, generator) {
@@ -175,7 +140,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var aws_sdk_1 = require('aws-sdk');
 var dynamodb_1 = require('aws-sdk/clients/dynamodb');
 var AwsResource_1 = require('../AwsResource');
-var log = __importStar(require('../log'));
 // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html
 // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html
 var DynamoDbWrapper = /** @class */ (function () {
@@ -197,7 +161,6 @@ var DynamoDbWrapper = /** @class */ (function () {
     return __awaiter(this, void 0, void 0, function () {
       var _this = this;
       return __generator(this, function (_a) {
-        log.debug('get', table, JSON.stringify(key));
         return [
           2 /*return*/,
           this.db
@@ -225,7 +188,6 @@ var DynamoDbWrapper = /** @class */ (function () {
       var params, attributeNames, attributeValues;
       var _this = this;
       return __generator(this, function (_a) {
-        log.debug('query', table);
         params = {
           TableName: table,
           ConsistentRead: this.consistentRead,
@@ -283,7 +245,6 @@ var DynamoDbWrapper = /** @class */ (function () {
       var params;
       var _this = this;
       return __generator(this, function (_a) {
-        log.debug('scan', table);
         params = {
           TableName: table,
           ConsistentRead: this.consistentRead,
@@ -321,7 +282,6 @@ var DynamoDbWrapper = /** @class */ (function () {
       var requestMap;
       var _a;
       return __generator(this, function (_b) {
-        log.debug('batchGet', table, JSON.stringify(keys));
         requestMap =
           ((_a = {}),
           (_a[table] = {
@@ -337,7 +297,6 @@ var DynamoDbWrapper = /** @class */ (function () {
     return __awaiter(this, void 0, void 0, function () {
       var _this = this;
       return __generator(this, function (_a) {
-        log.debug('put', table, JSON.stringify(item));
         return [
           2 /*return*/,
           this.db
@@ -359,7 +318,6 @@ var DynamoDbWrapper = /** @class */ (function () {
       var requestMap;
       var _a;
       return __generator(this, function (_b) {
-        log.debug('batchPut', table, JSON.stringify(items));
         requestMap =
           ((_a = {}),
           (_a[table] = items.map(function (item) {
@@ -374,7 +332,6 @@ var DynamoDbWrapper = /** @class */ (function () {
     return __awaiter(this, void 0, void 0, function () {
       var _this = this;
       return __generator(this, function (_a) {
-        log.debug('delete', table, JSON.stringify(key));
         return [
           2 /*return*/,
           this.db
@@ -395,7 +352,6 @@ var DynamoDbWrapper = /** @class */ (function () {
       var requestMap;
       var _a;
       return __generator(this, function (_b) {
-        log.debug('batchDelete', table, JSON.stringify(keys));
         requestMap =
           ((_a = {}),
           (_a[table] = keys.map(function (key) {

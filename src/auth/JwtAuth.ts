@@ -194,6 +194,7 @@ export default class JwtAuth implements Auth {
     try {
       const bearerToken = event.authorizationToken;
       const sub = await this.verifyBearerToken(bearerToken, scopes);
+      log.info('success');
       return this.generateIamPolicy({ id: sub }, 'Allow', event.methodArn);
     } catch (error) {
       log.error(error);

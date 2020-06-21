@@ -36,7 +36,6 @@ export default class DynamoDbWrapper {
   }
 
   async get(table: string, key: Key): Promise<any> {
-    log.debug('get', table, JSON.stringify(key));
     return this.db
       .get({
         TableName: table,
@@ -57,7 +56,6 @@ export default class DynamoDbWrapper {
     ExclusiveStartKey?: Key,
     items: any = []
   ) {
-    log.debug('query', table);
     const params: QueryInput = {
       TableName: table,
       ConsistentRead: this.consistentRead,
@@ -104,7 +102,6 @@ export default class DynamoDbWrapper {
   }
 
   async scan(table: string, conditionExpression?: ConditionExpression, ExclusiveStartKey?: Key, items: any = []) {
-    log.debug('scan', table);
     const params: ScanInput = {
       TableName: table,
       ConsistentRead: this.consistentRead,
@@ -133,7 +130,6 @@ export default class DynamoDbWrapper {
   }
 
   async batchGet(table: string, keys: Key[]) {
-    log.debug('batchGet', table, JSON.stringify(keys));
     const requestMap = {
       [table]: {
         Keys: keys,
@@ -144,7 +140,6 @@ export default class DynamoDbWrapper {
   }
 
   async put(table: string, item: any, conditionExpression?: string) {
-    log.debug('put', table, JSON.stringify(item));
     return this.db
       .put({
         TableName: table,
@@ -156,7 +151,6 @@ export default class DynamoDbWrapper {
   }
 
   async batchPut(table: string, items: any[]) {
-    log.debug('batchPut', table, JSON.stringify(items));
     const requestMap: BatchWriteItemRequestMap = {
       [table]: items.map((item) => ({ PutRequest: { Item: item } }))
     };
@@ -164,7 +158,6 @@ export default class DynamoDbWrapper {
   }
 
   async delete(table: string, key: Key) {
-    log.debug('delete', table, JSON.stringify(key));
     return this.db
       .delete({
         TableName: table,
@@ -175,7 +168,6 @@ export default class DynamoDbWrapper {
   }
 
   async batchDelete(table: string, keys: Key[]) {
-    log.debug('batchDelete', table, JSON.stringify(keys));
     const requestMap: BatchWriteItemRequestMap = {
       [table]: keys.map((key) => ({ DeleteRequest: { Key: key } }))
     };

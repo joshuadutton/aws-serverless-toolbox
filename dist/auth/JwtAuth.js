@@ -445,6 +445,7 @@ var JwtAuth = /** @class */ (function () {
             return [4 /*yield*/, this.verifyBearerToken(bearerToken, scopes)];
           case 1:
             sub = _a.sent();
+            log.info('success');
             return [2 /*return*/, this.generateIamPolicy({ id: sub }, 'Allow', event.methodArn)];
           case 2:
             error_3 = _a.sent();
