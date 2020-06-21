@@ -13,14 +13,14 @@ import { Auth, Token } from './auth/Auth';
 import JwtAuth from './auth/JwtAuth';
 export { Auth, Token, JwtAuth };
 import ApiGatewayExpress from './apiGateway/ApiGatewayExpress';
-import { ApiGatewayWebSocketEvent, sendWebSocketMessage } from './apiGateway/ApiGatewayWebSockets';
+import ApiGatewayWebSockets, { ApiGatewayWebSocketEvent } from './apiGateway/ApiGatewayWebSockets';
 import ApiGatewayWebSocketSubscriptions from './apiGateway/ApiGatewayWebSocketSubscriptions';
 import SubscriptionHandler from './apiGateway/SubscriptionHandler';
 import HttpError from './apiGateway/HttpError';
 export {
   ApiGatewayExpress,
+  ApiGatewayWebSockets,
   ApiGatewayWebSocketEvent,
-  sendWebSocketMessage,
   SubscriptionHandler,
   ApiGatewayWebSocketSubscriptions,
   HttpError

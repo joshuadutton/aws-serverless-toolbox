@@ -123,42 +123,44 @@ var __generator =
     }
   };
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.iamRoleStatementInvokeWebSockets = exports.sendWebSocketMessage = void 0;
 var aws_sdk_1 = require('aws-sdk');
-// https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApiGatewayManagementApi.html
-function sendWebSocketMessage(connectionId, endpoint, message) {
-  return __awaiter(this, void 0, void 0, function () {
-    var apiGateway;
-    return __generator(this, function (_a) {
-      apiGateway = new aws_sdk_1.ApiGatewayManagementApi({ endpoint: endpoint, apiVersion: '2029' });
-      return [
-        2 /*return*/,
-        apiGateway
-          .postToConnection({
-            ConnectionId: connectionId,
-            Data: message
-          })
-          .promise()
-          .catch(function (error) {
-            return errorWrapper(error, 'postToConnection', endpoint);
-          })
-      ];
-    });
-  });
-}
-exports.sendWebSocketMessage = sendWebSocketMessage;
-function iamRoleStatementInvokeWebSockets() {
-  return {
-    Effect: 'Allow',
-    Action: 'execute-api:Invoke',
-    Resource: 'arn:aws:execute-api:*:*:*'
-  };
-}
-exports.iamRoleStatementInvokeWebSockets = iamRoleStatementInvokeWebSockets;
 function errorWrapper(error, action, endpoint) {
   // AWS doesn't namespace errors
   error.code = 'ApiGatewayManagementApi:' + error.code;
   error.message = 'ApiGatewayManagementApi:' + action + ':' + endpoint + ' ' + error.message;
   return Promise.reject(error);
 }
+var ApiGatewayWebSockets = /** @class */ (function () {
+  function ApiGatewayWebSockets() {}
+  // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApiGatewayManagementApi.html
+  ApiGatewayWebSockets.sendWebSocketMessage = function (connectionId, endpoint, message) {
+    return __awaiter(this, void 0, void 0, function () {
+      var apiGateway;
+      return __generator(this, function (_a) {
+        apiGateway = new aws_sdk_1.ApiGatewayManagementApi({ endpoint: endpoint, apiVersion: '2029' });
+        return [
+          2 /*return*/,
+          apiGateway
+            .postToConnection({
+              ConnectionId: connectionId,
+              Data: message
+            })
+            .promise()
+            .catch(function (error) {
+              return errorWrapper(error, 'postToConnection', endpoint);
+            })
+        ];
+      });
+    });
+  };
+  ApiGatewayWebSockets.iamRoleStatementInvokeWebSockets = function () {
+    return {
+      Effect: 'Allow',
+      Action: 'execute-api:Invoke',
+      Resource: 'arn:aws:execute-api:*:*:*'
+    };
+  };
+  return ApiGatewayWebSockets;
+})();
+exports.default = ApiGatewayWebSockets;
 //# sourceMappingURL=ApiGatewayWebSockets.js.map

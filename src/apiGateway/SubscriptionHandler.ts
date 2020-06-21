@@ -1,4 +1,4 @@
-import { sendWebSocketMessage } from './ApiGatewayWebSockets';
+import ApiGatewayWebSockets from './ApiGatewayWebSockets';
 import ObjectStore from '../objectStore/ObjectStore';
 
 export type CacheObject = Subscription | SubscriberMap;
@@ -110,12 +110,14 @@ export default class SubscriptionHandler {
         }
         switch (subscriber.type) {
           case SubscriberType.WebSocket: {
-            return sendWebSocketMessage(subscriber.id, subscriber.endpoint, JSON.stringify(message)).catch((error) => {
-              if (error.errno === 'ECONNREFUSED' || error.statusCode === GONE_EXCEPTION_STATUS_CODE) {
-                return this.unsubscribe(subscriber.id);
+            return ApiGatewayWebSockets.sendWebSocketMessage(subscriber.id, subscriber.endpoint, JSON.stringify(message)).catch(
+              (error) => {
+                if (error.errno === 'ECONNREFUSED' || error.statusCode === GONE_EXCEPTION_STATUS_CODE) {
+                  return this.unsubscribe(subscriber.id);
+                }
+                throw error;
               }
-              throw error;
-            });
+            );
           }
           case SubscriberType.PushNotification: {
             return Promise.reject('PushNotifications not implemented yet');

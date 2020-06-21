@@ -122,9 +122,14 @@ var __generator =
       return { value: op[0] ? op[1] : void 0, done: true };
     }
   };
+var __importDefault =
+  (this && this.__importDefault) ||
+  function (mod) {
+    return mod && mod.__esModule ? mod : { default: mod };
+  };
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.SubscriberMap = exports.Subscription = exports.PushNotificationSubscriber = exports.WebSocketSubscriber = exports.SubscriberType = void 0;
-var ApiGatewayWebSockets_1 = require('./ApiGatewayWebSockets');
+var ApiGatewayWebSockets_1 = __importDefault(require('./ApiGatewayWebSockets'));
 var SubscriberType;
 (function (SubscriberType) {
   SubscriberType['WebSocket'] = 'WebSocket';
@@ -272,16 +277,14 @@ var SubscriptionHandler = /** @class */ (function () {
                       case SubscriberType.WebSocket: {
                         return [
                           2 /*return*/,
-                          ApiGatewayWebSockets_1.sendWebSocketMessage(
-                            subscriber.id,
-                            subscriber.endpoint,
-                            JSON.stringify(message)
-                          ).catch(function (error) {
-                            if (error.errno === 'ECONNREFUSED' || error.statusCode === GONE_EXCEPTION_STATUS_CODE) {
-                              return _this.unsubscribe(subscriber.id);
-                            }
-                            throw error;
-                          })
+                          ApiGatewayWebSockets_1.default
+                            .sendWebSocketMessage(subscriber.id, subscriber.endpoint, JSON.stringify(message))
+                            .catch(function (error) {
+                              if (error.errno === 'ECONNREFUSED' || error.statusCode === GONE_EXCEPTION_STATUS_CODE) {
+                                return _this.unsubscribe(subscriber.id);
+                              }
+                              throw error;
+                            })
                         ];
                       }
                       case SubscriberType.PushNotification: {

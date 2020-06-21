@@ -3,7 +3,7 @@ import { Context } from 'aws-lambda';
 import * as log from '../log';
 import SubscriptionHandler, { WebSocketSubscriber } from './SubscriptionHandler';
 import { Auth } from '../auth/Auth';
-import { ApiGatewayWebSocketEvent, ApiGatewayWebSocketResult, sendWebSocketMessage } from './ApiGatewayWebSockets';
+import ApiGatewayWebSockets, { ApiGatewayWebSocketEvent, ApiGatewayWebSocketResult } from './ApiGatewayWebSockets';
 
 export default class ApiGatewayWebSocketSubscriptions {
   subscriptionHandler: SubscriptionHandler;
@@ -46,7 +46,7 @@ export default class ApiGatewayWebSocketSubscriptions {
     } catch (error) {
       error.statusCode = error.statusCode || 500;
       log.error(error);
-      await sendWebSocketMessage(connectionId, endpoint, `${error}`);
+      await ApiGatewayWebSockets.sendWebSocketMessage(connectionId, endpoint, `${error}`);
     }
     return { statusCode: 200 };
   }

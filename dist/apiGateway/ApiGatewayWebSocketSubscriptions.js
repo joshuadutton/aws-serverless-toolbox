@@ -157,10 +157,15 @@ var __generator =
       return { value: op[0] ? op[1] : void 0, done: true };
     }
   };
+var __importDefault =
+  (this && this.__importDefault) ||
+  function (mod) {
+    return mod && mod.__esModule ? mod : { default: mod };
+  };
 Object.defineProperty(exports, '__esModule', { value: true });
 var log = __importStar(require('../log'));
 var SubscriptionHandler_1 = require('./SubscriptionHandler');
-var ApiGatewayWebSockets_1 = require('./ApiGatewayWebSockets');
+var ApiGatewayWebSockets_1 = __importDefault(require('./ApiGatewayWebSockets'));
 var ApiGatewayWebSocketSubscriptions = /** @class */ (function () {
   function ApiGatewayWebSocketSubscriptions(subscriptionHandler, auth) {
     this.subscriptionHandler = subscriptionHandler;
@@ -219,7 +224,7 @@ var ApiGatewayWebSocketSubscriptions = /** @class */ (function () {
             error_1 = _b.sent();
             error_1.statusCode = error_1.statusCode || 500;
             log.error(error_1);
-            return [4 /*yield*/, ApiGatewayWebSockets_1.sendWebSocketMessage(connectionId, endpoint, '' + error_1)];
+            return [4 /*yield*/, ApiGatewayWebSockets_1.default.sendWebSocketMessage(connectionId, endpoint, '' + error_1)];
           case 10:
             _b.sent();
             return [3 /*break*/, 11];

@@ -26,5 +26,7 @@ export interface ApiGatewayWebSocketEvent {
 export interface ApiGatewayWebSocketResult {
   statusCode: number;
 }
-export declare function sendWebSocketMessage(connectionId: string, endpoint: string, message: any): Promise<any>;
-export declare function iamRoleStatementInvokeWebSockets(): IamRoleStatement;
+export default class ApiGatewayWebSockets {
+  static sendWebSocketMessage(connectionId: string, endpoint: string, message: any): Promise<any>;
+  static iamRoleStatementInvokeWebSockets(): IamRoleStatement;
+}
