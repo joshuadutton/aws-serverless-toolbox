@@ -69,7 +69,7 @@ var ApiGatewayWebSocketSubscriptions = /** @class */ (function () {
     }
     ApiGatewayWebSocketSubscriptions.prototype.handler = function (event, context) {
         return __awaiter(this, void 0, void 0, function () {
-            var connectionId, routeKey, domain, stage, headers, endpoint, id, _a, subscriber, error_1;
+            var connectionId, routeKey, domain, stage, headers, endpoint, authorization, id, _a, subscriber, error_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -88,7 +88,8 @@ var ApiGatewayWebSocketSubscriptions = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 9, , 11]);
-                        return [4 /*yield*/, this.auth.verifyBearerToken(headers['Authorization'], this.scopes)];
+                        authorization = headers['Authorization'] || headers['Sec-WebSocket-Protocol'];
+                        return [4 /*yield*/, this.auth.verifyBearerToken(authorization, this.scopes)];
                     case 2:
                         id = _b.sent();
                         log.logApiGatewayWebsocket(routeKey, endpoint, connectionId, id);
