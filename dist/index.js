@@ -40,7 +40,7 @@ var __importDefault =
     return mod && mod.__esModule ? mod : { default: mod };
   };
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.HttpError = exports.ApiGatewayWebSocketSubscriptions = exports.SubscriptionHandler = exports.ApiGatewayWebSockets = exports.ApiGatewayExpress = exports.JwtAuth = exports.S3Wrapper = exports.UpdateExpression = exports.ConditionExpression = exports.DynamoDbWrapper = exports.S3ObjectStore = exports.DynamoDbObjectStore = exports.actionHandler = void 0;
+exports.Subscription = exports.HttpError = exports.ApiGatewayWebSocketSubscriptions = exports.SubscriptionHandler = exports.ApiGatewayWebSockets = exports.ApiGatewayExpress = exports.JwtAuth = exports.S3Wrapper = exports.UpdateExpression = exports.ConditionExpression = exports.DynamoDbWrapper = exports.S3ObjectStore = exports.DynamoDbObjectStore = exports.actionHandler = void 0;
 // logs
 exports.log = __importStar(require('./log'));
 // Object Stores
@@ -74,8 +74,14 @@ var ApiGatewayWebSockets_1 = __importDefault(require('./apiGateway/ApiGatewayWeb
 exports.ApiGatewayWebSockets = ApiGatewayWebSockets_1.default;
 var ApiGatewayWebSocketSubscriptions_1 = __importDefault(require('./apiGateway/ApiGatewayWebSocketSubscriptions'));
 exports.ApiGatewayWebSocketSubscriptions = ApiGatewayWebSocketSubscriptions_1.default;
-var SubscriptionHandler_1 = __importDefault(require('./apiGateway/SubscriptionHandler'));
+var SubscriptionHandler_1 = __importStar(require('./apiGateway/SubscriptionHandler'));
 exports.SubscriptionHandler = SubscriptionHandler_1.default;
+Object.defineProperty(exports, 'Subscription', {
+  enumerable: true,
+  get: function () {
+    return SubscriptionHandler_1.Subscription;
+  }
+});
 var HttpError_1 = __importDefault(require('./apiGateway/HttpError'));
 exports.HttpError = HttpError_1.default;
 //# sourceMappingURL=index.js.map

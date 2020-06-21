@@ -10,12 +10,12 @@ export { DynamoDbWrapper, ConditionExpression, UpdateExpression };
 import S3Wrapper from './s3/S3Wrapper';
 export { S3Wrapper };
 import { Auth, Token } from './auth/Auth';
-import JwtAuth from './auth/JwtAuth';
-export { Auth, Token, JwtAuth };
+import JwtAuth, { PersistedPassword } from './auth/JwtAuth';
+export { Auth, Token, JwtAuth, PersistedPassword };
 import ApiGatewayExpress from './apiGateway/ApiGatewayExpress';
 import ApiGatewayWebSockets, { ApiGatewayWebSocketEvent } from './apiGateway/ApiGatewayWebSockets';
 import ApiGatewayWebSocketSubscriptions from './apiGateway/ApiGatewayWebSocketSubscriptions';
-import SubscriptionHandler from './apiGateway/SubscriptionHandler';
+import SubscriptionHandler, { Subscription, Subscriber } from './apiGateway/SubscriptionHandler';
 import HttpError from './apiGateway/HttpError';
 export {
   ApiGatewayExpress,
@@ -23,7 +23,9 @@ export {
   ApiGatewayWebSocketEvent,
   SubscriptionHandler,
   ApiGatewayWebSocketSubscriptions,
-  HttpError
+  HttpError,
+  Subscription,
+  Subscriber
 };
 import { IamRoleStatement, IamPolicy, IamPolicyForPrincipal, CloudFormation } from './AwsResource';
 export { IamRoleStatement, IamPolicy, IamPolicyForPrincipal, CloudFormation };
