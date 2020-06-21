@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "description": "Reusable building blocks for AWS",
   "main": "dist/index.js",
+  "typings": "./dist/index.d.ts",
   "repository": "https://github.com/joshuadutton/aws-serverless-toolbox",
   "author": "Joshua Dutton",
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "rm -r dist/ && tsc"
+    "build": "rm -rf ./dist/* && tsc"
   },
   "dependencies": {
     "aws-serverless-express": "^3.3.8",
@@ -29,7 +30,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "yarn build && git add dist/ && lint-staged"
     }
   },
   "lint-staged": {

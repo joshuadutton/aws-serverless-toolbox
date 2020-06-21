@@ -1,0 +1,1 @@
+{"version":3,"file":"HttpError.js","sourceRoot":"","sources":["../../src/apiGateway/HttpError.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;AAAA;IAAuC,6BAAK;IAG1C,mBAAY,UAAkB,EAAE,OAAe;QAA/C,YACE,kBAAM,OAAO,CAAC,SAGf;QAFC,KAAI,CAAC,UAAU,GAAG,UAAU,CAAC;QAC7B,KAAI,CAAC,OAAO,GAAG,OAAO,CAAC;;IACzB,CAAC;IACH,gBAAC;AAAD,CAAC,AARD,CAAuC,KAAK,GAQ3C"}
