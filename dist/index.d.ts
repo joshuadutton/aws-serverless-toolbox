@@ -17,15 +17,6 @@ import ApiGatewayWebSockets, { ApiGatewayWebSocketEvent } from './apiGateway/Api
 import ApiGatewayWebSocketSubscriptions from './apiGateway/ApiGatewayWebSocketSubscriptions';
 import SubscriptionHandler, { Subscription, Subscriber } from './apiGateway/SubscriptionHandler';
 import HttpError from './apiGateway/HttpError';
-export {
-  ApiGatewayExpress,
-  ApiGatewayWebSockets,
-  ApiGatewayWebSocketEvent,
-  SubscriptionHandler,
-  ApiGatewayWebSocketSubscriptions,
-  HttpError,
-  Subscription,
-  Subscriber
-};
+export { ApiGatewayExpress, ApiGatewayWebSockets, ApiGatewayWebSocketEvent, SubscriptionHandler, ApiGatewayWebSocketSubscriptions, HttpError, Subscription, Subscriber };
 import { IamRoleStatement, IamPolicy, IamPolicyForPrincipal, CloudFormation } from './AwsResource';
 export { IamRoleStatement, IamPolicy, IamPolicyForPrincipal, CloudFormation };

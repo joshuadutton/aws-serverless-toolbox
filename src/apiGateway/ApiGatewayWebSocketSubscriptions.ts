@@ -8,10 +8,12 @@ import ApiGatewayWebSockets, { ApiGatewayWebSocketEvent, ApiGatewayWebSocketResu
 export default class ApiGatewayWebSocketSubscriptions {
   subscriptionHandler: SubscriptionHandler;
   auth: Auth;
+  scopes: string[];
 
-  constructor(subscriptionHandler: SubscriptionHandler, auth: Auth) {
+  constructor(subscriptionHandler: SubscriptionHandler, auth: Auth, scopes: string[]) {
     this.subscriptionHandler = subscriptionHandler;
     this.auth = auth;
+    this.scopes = scopes;
   }
 
   async handler(event: ApiGatewayWebSocketEvent, context: Context): Promise<ApiGatewayWebSocketResult> {
@@ -29,12 +31,12 @@ export default class ApiGatewayWebSocketSubscriptions {
     }
 
     try {
-      const userId = await this.auth.verifyBearerToken(headers['Authorization'], ['self']);
-      log.logApiGatewayWebsocket(routeKey, endpoint, connectionId, userId);
+      const id = await this.auth.verifyBearerToken(headers['Authorization'], this.scopes);
+      log.logApiGatewayWebsocket(routeKey, endpoint, connectionId, id);
       switch (routeKey) {
         case '$connect': {
           const subscriber = new WebSocketSubscriber(connectionId, endpoint);
-          await this.subscriptionHandler.subscribe(userId, subscriber);
+          await this.subscriptionHandler.subscribe(id, subscriber);
           break;
         }
         case '$disconnect':
