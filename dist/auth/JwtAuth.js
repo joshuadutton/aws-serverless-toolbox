@@ -342,7 +342,7 @@ var JwtAuth = /** @class */ (function () {
             return [4 /*yield*/, this.passwordStore.get(id)];
           case 1:
             if (_a.sent()) {
-              return [2 /*return*/, Promise.reject('user already exits')];
+              return [2 /*return*/, Promise.reject('id already exits')];
             }
             if (password.length < 10) {
               return [2 /*return*/, Promise.reject('password must be 10 or more characters long')];

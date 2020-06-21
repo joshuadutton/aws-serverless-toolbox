@@ -134,7 +134,7 @@ export default class JwtAuth implements Auth {
 
   async addPassword(id: string, password: string, scopes: string[]): Promise<Token> {
     if (await this.passwordStore.get(id)) {
-      return Promise.reject('user already exits');
+      return Promise.reject('id already exits');
     }
     if (password.length < 10) {
       return Promise.reject('password must be 10 or more characters long');

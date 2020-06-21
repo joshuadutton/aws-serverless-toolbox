@@ -8,7 +8,7 @@ export default class DynamoDbWrapper {
   private readonly consistentRead;
   constructor(region: string, consistentRead?: boolean);
   private errorWrapper;
-  get(table: string, id: Key): Promise<any>;
+  get(table: string, key: Key): Promise<any>;
   query(
     table: string,
     keyExpression?: ConditionExpression,

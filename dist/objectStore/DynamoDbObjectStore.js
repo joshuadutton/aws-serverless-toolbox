@@ -160,8 +160,20 @@ var DynamoObjectDBStore = /** @class */ (function () {
   };
   DynamoObjectDBStore.prototype.get = function (id) {
     return __awaiter(this, void 0, void 0, function () {
+      var item;
       return __generator(this, function (_a) {
-        return [2 /*return*/, this.db.get(this.tableName, { id: id })];
+        switch (_a.label) {
+          case 0:
+            return [4 /*yield*/, this.db.get(this.tableName, { id: id })];
+          case 1:
+            item = _a.sent();
+            if (this.timeToLiveSeconds && item[this.expiresKey]) {
+              if (item[this.expiresKey] < Date.now() / 1000) {
+                return [2 /*return*/, undefined];
+              }
+            }
+            return [2 /*return*/, item];
+        }
       });
     });
   };
@@ -173,7 +185,7 @@ var DynamoObjectDBStore = /** @class */ (function () {
         if (this.timeToLiveSeconds) {
           putItem[this.expiresKey] = this.createExpires(this.timeToLiveSeconds);
         }
-        return [2 /*return*/, this.db.put(this.tableName, item)];
+        return [2 /*return*/, this.db.put(this.tableName, putItem)];
       });
     });
   };

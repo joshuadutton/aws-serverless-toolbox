@@ -1,5 +1,3 @@
-import { DynamoDB, AWSError } from 'aws-sdk';
-
 import ObjectStore, { Action, Reducer, actionHandler } from './ObjectStore';
 import DynamoDbWrapper from '../dynamoDb/DynamoDbWrapper';
 
@@ -22,7 +20,13 @@ export default class DynamoObjectDBStore<T> implements ObjectStore<T> {
   }
 
   async get(id: string): Promise<T | undefined> {
-    return this.db.get(this.tableName, { id: id });
+    const item = await this.db.get(this.tableName, { id: id });
+    if (this.timeToLiveSeconds && item[this.expiresKey]) {
+      if (item[this.expiresKey] < Date.now() / 1000) {
+        return undefined;
+      }
+    }
+    return item;
   }
 
   async put(id: string, item: T): Promise<T> {
@@ -30,7 +34,7 @@ export default class DynamoObjectDBStore<T> implements ObjectStore<T> {
     if (this.timeToLiveSeconds) {
       putItem[this.expiresKey] = this.createExpires(this.timeToLiveSeconds);
     }
-    return this.db.put(this.tableName, item);
+    return this.db.put(this.tableName, putItem);
   }
 
   async delete(id: string) {
