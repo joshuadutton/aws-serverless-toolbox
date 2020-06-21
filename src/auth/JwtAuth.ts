@@ -22,9 +22,13 @@ export default class JwtAuth implements Auth {
   private readonly signingKeyId = '927cde40-41e7-45b1-861a-864f6d6ec269'; // uuid to not conflict with other ids
   private signingSecretAsPersistedPassword?: PersistedPassword; // stored as hash in PersistedPassword to look like any other entry in password table
   private readonly passwordStore: ObjectStore<PersistedPassword>;
+  private readonly timeToLive: number;
+  private readonly revokable: boolean;
 
-  constructor(store: ObjectStore<PersistedPassword>) {
+  constructor(store: ObjectStore<PersistedPassword>, timeToLive = 3600, revokable = false) {
     this.passwordStore = store;
+    this.timeToLive = timeToLive;
+    this.revokable = revokable;
   }
 
   private async getSigningSecret(): Promise<string> {
@@ -45,7 +49,7 @@ export default class JwtAuth implements Auth {
       salt: crypto.randomBytes(this.saltLength).toString('base64'),
       hash: crypto.randomBytes(this.hashLength).toString('base64'),
       iterations: this.iterations,
-      scopes: ['user']
+      scopes: ['system']
     };
     await this.passwordStore.put(this.signingKeyId, this.signingSecretAsPersistedPassword);
     return this.signingSecretAsPersistedPassword.hash;
@@ -94,7 +98,8 @@ export default class JwtAuth implements Auth {
       sub: id,
       scopes
     };
-    return jwt.sign(jwtData, signingSecret, { expiresIn: '1h' });
+    const options = this.timeToLive > 0 ? { expiresIn: this.timeToLive } : undefined;
+    return jwt.sign(jwtData, signingSecret, options);
   }
 
   async verifyToken(token: Token, scopes: string[]): Promise<string> {
@@ -111,6 +116,16 @@ export default class JwtAuth implements Auth {
       if (!scopeFound) {
         return Promise.reject('invalid scope');
       }
+
+      if (this.revokable) {
+        const persistedPassword = await this.passwordStore.get(decoded.sub);
+        if (persistedPassword) {
+          return decoded.sub;
+        } else {
+          return Promise.reject('unauthorized');
+        }
+      }
+
       return decoded.sub;
     } catch (error) {
       return Promise.reject(error);
@@ -155,6 +170,24 @@ export default class JwtAuth implements Auth {
       log.error(error);
       return Promise.reject(new HttpError(403, 'unauthorized'));
     }
+  }
+
+  async revokeTokenForId(token: Token, id: string): Promise<void> {
+    if (!this.revokable) {
+      return Promise.reject('revocation not allowed');
+    }
+    try {
+      const persistedPassword = await this.passwordStore.get(id);
+      if (persistedPassword) {
+        const tokenId = await this.verifyToken(token, persistedPassword.scopes);
+        if (tokenId == id) {
+          await this.passwordStore.delete(id);
+          return;
+        }
+      }
+    } catch (error) {}
+
+    return Promise.reject('revocation unsuccessful');
   }
 
   async authHandler(event: ApiGatewayAuthorizerTokenEvent, scopes: string[]): Promise<IamPolicyForPrincipal> {

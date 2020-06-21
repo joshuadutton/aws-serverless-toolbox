@@ -15,7 +15,9 @@ export default class JwtAuth implements Auth {
   private readonly signingKeyId;
   private signingSecretAsPersistedPassword?;
   private readonly passwordStore;
-  constructor(store: ObjectStore<PersistedPassword>);
+  private readonly timeToLive;
+  private readonly revokable;
+  constructor(store: ObjectStore<PersistedPassword>, timeToLive?: number, revokable?: boolean);
   private getSigningSecret;
   generatePersistedPassword(password: string, scopes: string[]): Promise<PersistedPassword>;
   private verifyPersistedPassword;
@@ -24,6 +26,7 @@ export default class JwtAuth implements Auth {
   addPassword(id: string, password: string, scopes: string[]): Promise<Token>;
   verifyPassword(id: string, password: string): Promise<Token>;
   verifyBearerToken(bearerToken: string | undefined, scopes: string[]): Promise<string>;
+  revokeTokenForId(token: Token, id: string): Promise<void>;
   authHandler(event: ApiGatewayAuthorizerTokenEvent, scopes: string[]): Promise<IamPolicyForPrincipal>;
   private generateIamPolicy;
 }

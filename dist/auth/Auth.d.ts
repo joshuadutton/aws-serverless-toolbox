@@ -11,5 +11,6 @@ export interface Auth {
   createToken(id: string, scopes: string[]): Promise<Token>;
   verifyToken(token: Token, scopes: string[]): Promise<string>;
   verifyBearerToken(bearerToken: string | undefined, scopes: string[]): Promise<string>;
+  revokeTokenForId(token: Token, id: string): Promise<void>;
   authHandler(event: ApiGatewayAuthorizerTokenEvent, scopes: string[]): Promise<IamPolicyForPrincipal>;
 }

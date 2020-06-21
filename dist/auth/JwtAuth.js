@@ -168,13 +168,21 @@ var jsonwebtoken_1 = __importDefault(require('jsonwebtoken'));
 var log = __importStar(require('../log'));
 var HttpError_1 = __importDefault(require('../apiGateway/HttpError'));
 var JwtAuth = /** @class */ (function () {
-  function JwtAuth(store) {
+  function JwtAuth(store, timeToLive, revokable) {
+    if (timeToLive === void 0) {
+      timeToLive = 3600;
+    }
+    if (revokable === void 0) {
+      revokable = false;
+    }
     this.hashLength = 256;
     this.digest = 'sha256';
     this.saltLength = 64;
     this.iterations = 10000;
     this.signingKeyId = '927cde40-41e7-45b1-861a-864f6d6ec269'; // uuid to not conflict with other ids
     this.passwordStore = store;
+    this.timeToLive = timeToLive;
+    this.revokable = revokable;
   }
   JwtAuth.prototype.getSigningSecret = function () {
     return __awaiter(this, void 0, void 0, function () {
@@ -200,7 +208,7 @@ var JwtAuth = /** @class */ (function () {
               salt: crypto_1.default.randomBytes(this.saltLength).toString('base64'),
               hash: crypto_1.default.randomBytes(this.hashLength).toString('base64'),
               iterations: this.iterations,
-              scopes: ['user']
+              scopes: ['system']
             };
             return [4 /*yield*/, this.passwordStore.put(this.signingKeyId, this.signingSecretAsPersistedPassword)];
           case 2:
@@ -263,7 +271,7 @@ var JwtAuth = /** @class */ (function () {
   };
   JwtAuth.prototype.createToken = function (id, scopes) {
     return __awaiter(this, void 0, void 0, function () {
-      var signingSecret, jwtData;
+      var signingSecret, jwtData, options;
       return __generator(this, function (_a) {
         switch (_a.label) {
           case 0:
@@ -274,37 +282,52 @@ var JwtAuth = /** @class */ (function () {
               sub: id,
               scopes: scopes
             };
-            return [2 /*return*/, jsonwebtoken_1.default.sign(jwtData, signingSecret, { expiresIn: '1h' })];
+            options = this.timeToLive > 0 ? { expiresIn: this.timeToLive } : undefined;
+            return [2 /*return*/, jsonwebtoken_1.default.sign(jwtData, signingSecret, options)];
         }
       });
     });
   };
   JwtAuth.prototype.verifyToken = function (token, scopes) {
     return __awaiter(this, void 0, void 0, function () {
-      var signingSecret, decoded, scopeFound, _i, scopes_1, scope;
+      var signingSecret, decoded, scopeFound, _i, scopes_1, scope, persistedPassword, error_1;
       return __generator(this, function (_a) {
         switch (_a.label) {
           case 0:
             return [4 /*yield*/, this.getSigningSecret()];
           case 1:
             signingSecret = _a.sent();
-            try {
-              decoded = jsonwebtoken_1.default.verify(token, signingSecret);
-              scopeFound = false;
-              for (_i = 0, scopes_1 = scopes; _i < scopes_1.length; _i++) {
-                scope = scopes_1[_i];
-                if (decoded.scopes.includes(scope)) {
-                  scopeFound = true;
-                  break;
-                }
+            _a.label = 2;
+          case 2:
+            _a.trys.push([2, 5, , 6]);
+            decoded = jsonwebtoken_1.default.verify(token, signingSecret);
+            scopeFound = false;
+            for (_i = 0, scopes_1 = scopes; _i < scopes_1.length; _i++) {
+              scope = scopes_1[_i];
+              if (decoded.scopes.includes(scope)) {
+                scopeFound = true;
+                break;
               }
-              if (!scopeFound) {
-                return [2 /*return*/, Promise.reject('invalid scope')];
-              }
-              return [2 /*return*/, decoded.sub];
-            } catch (error) {
-              return [2 /*return*/, Promise.reject(error)];
             }
+            if (!scopeFound) {
+              return [2 /*return*/, Promise.reject('invalid scope')];
+            }
+            if (!this.revokable) return [3 /*break*/, 4];
+            return [4 /*yield*/, this.passwordStore.get(decoded.sub)];
+          case 3:
+            persistedPassword = _a.sent();
+            if (persistedPassword) {
+              return [2 /*return*/, decoded.sub];
+            } else {
+              return [2 /*return*/, Promise.reject('unauthorized')];
+            }
+            _a.label = 4;
+          case 4:
+            return [2 /*return*/, decoded.sub];
+          case 5:
+            error_1 = _a.sent();
+            return [2 /*return*/, Promise.reject(error_1)];
+          case 6:
             return [2 /*return*/];
         }
       });
@@ -376,9 +399,44 @@ var JwtAuth = /** @class */ (function () {
       });
     });
   };
+  JwtAuth.prototype.revokeTokenForId = function (token, id) {
+    return __awaiter(this, void 0, void 0, function () {
+      var persistedPassword, tokenId, error_2;
+      return __generator(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            if (!this.revokable) {
+              return [2 /*return*/, Promise.reject('revocation not allowed')];
+            }
+            _a.label = 1;
+          case 1:
+            _a.trys.push([1, 6, , 7]);
+            return [4 /*yield*/, this.passwordStore.get(id)];
+          case 2:
+            persistedPassword = _a.sent();
+            if (!persistedPassword) return [3 /*break*/, 5];
+            return [4 /*yield*/, this.verifyToken(token, persistedPassword.scopes)];
+          case 3:
+            tokenId = _a.sent();
+            if (!(tokenId == id)) return [3 /*break*/, 5];
+            return [4 /*yield*/, this.passwordStore.delete(id)];
+          case 4:
+            _a.sent();
+            return [2 /*return*/];
+          case 5:
+            return [3 /*break*/, 7];
+          case 6:
+            error_2 = _a.sent();
+            return [3 /*break*/, 7];
+          case 7:
+            return [2 /*return*/, Promise.reject('revocation unsuccessful')];
+        }
+      });
+    });
+  };
   JwtAuth.prototype.authHandler = function (event, scopes) {
     return __awaiter(this, void 0, void 0, function () {
-      var bearerToken, sub, error_1;
+      var bearerToken, sub, error_3;
       return __generator(this, function (_a) {
         switch (_a.label) {
           case 0:
@@ -389,8 +447,8 @@ var JwtAuth = /** @class */ (function () {
             sub = _a.sent();
             return [2 /*return*/, this.generateIamPolicy({ id: sub }, 'Allow', event.methodArn)];
           case 2:
-            error_1 = _a.sent();
-            log.error(error_1);
+            error_3 = _a.sent();
+            log.error(error_3);
             return [2 /*return*/, this.generateIamPolicy({}, 'Deny', event.methodArn)];
           case 3:
             return [2 /*return*/];
