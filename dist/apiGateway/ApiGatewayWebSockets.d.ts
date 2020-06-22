@@ -22,6 +22,7 @@ export interface ApiGatewayWebSocketEvent {
         [key: string]: any;
     };
     isBase64Encoded: boolean;
+    body?: string;
 }
 export interface ApiGatewayWebSocketResult {
     statusCode: number;

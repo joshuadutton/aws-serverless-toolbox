@@ -21,7 +21,7 @@ export default class ApiGatewayWebSocketSubscriptions {
     const routeKey = event.requestContext.routeKey;
     const domain = event.requestContext.domainName;
     const stage = event.requestContext.stage;
-    const headers: any = event.headers;
+    const headers = event.headers;
 
     let endpoint = `https://${domain}`;
     if (domain === 'localhost') {
@@ -30,25 +30,42 @@ export default class ApiGatewayWebSocketSubscriptions {
       endpoint = `https://${domain}/${stage}`;
     }
 
+    log.logApiGatewayWebsocket(routeKey, endpoint, connectionId);
+
     try {
-      const authorization = headers['Authorization'] || `Bearer ${headers['Sec-WebSocket-Protocol']}`;
-      const id = await this.auth.verifyBearerToken(authorization, this.scopes);
-      log.logApiGatewayWebsocket(routeKey, endpoint, connectionId, id);
+      const verifyAndStoreConnection = async (authorization: string) => {
+        const id = await this.auth.verifyBearerToken(authorization, this.scopes);
+        log.info(id);
+        const subscriber = new WebSocketSubscriber(connectionId, endpoint);
+        await this.subscriptionHandler.subscribe(id, subscriber);
+      };
+
       switch (routeKey) {
         case '$connect': {
-          const subscriber = new WebSocketSubscriber(connectionId, endpoint);
-          await this.subscriptionHandler.subscribe(id, subscriber);
+          const authorization = headers?.Authorization;
+          if (authorization) {
+            await verifyAndStoreConnection(authorization);
+          }
           break;
         }
         case '$disconnect':
           await this.subscriptionHandler.unsubscribe(connectionId);
           break;
-        case '$default':
+        case '$default': {
+          if (event.body) {
+            const message = JSON.parse(event.body);
+            if (message.authorization) {
+              await verifyAndStoreConnection(message.authorization);
+              break;
+            }
+          }
           throw new Error(`incoming messages not supported`);
+        }
       }
     } catch (error) {
       error.statusCode = error.statusCode || 500;
       log.error(error);
+      // TODO: this doesn't work on $connect since it needs the 200 first
       await ApiGatewayWebSockets.sendWebSocketMessage(connectionId, endpoint, `${error}`);
     }
     return { statusCode: 200 };

@@ -69,7 +69,8 @@ var ApiGatewayWebSocketSubscriptions = /** @class */ (function () {
     }
     ApiGatewayWebSocketSubscriptions.prototype.handler = function (event, context) {
         return __awaiter(this, void 0, void 0, function () {
-            var connectionId, routeKey, domain, stage, headers, endpoint, authorization, id, _a, subscriber, error_1;
+            var connectionId, routeKey, domain, stage, headers, endpoint, verifyAndStoreConnection, _a, authorization, message, error_1;
+            var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -85,42 +86,66 @@ var ApiGatewayWebSocketSubscriptions = /** @class */ (function () {
                         else if (domain.includes('amazonaws.com')) {
                             endpoint = "https://" + domain + "/" + stage;
                         }
+                        log.logApiGatewayWebsocket(routeKey, endpoint, connectionId);
                         _b.label = 1;
                     case 1:
-                        _b.trys.push([1, 9, , 11]);
-                        authorization = headers['Authorization'] || "Bearer " + headers['Sec-WebSocket-Protocol'];
-                        return [4 /*yield*/, this.auth.verifyBearerToken(authorization, this.scopes)];
-                    case 2:
-                        id = _b.sent();
-                        log.logApiGatewayWebsocket(routeKey, endpoint, connectionId, id);
+                        _b.trys.push([1, 11, , 13]);
+                        verifyAndStoreConnection = function (authorization) { return __awaiter(_this, void 0, void 0, function () {
+                            var id, subscriber;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4 /*yield*/, this.auth.verifyBearerToken(authorization, this.scopes)];
+                                    case 1:
+                                        id = _a.sent();
+                                        log.info(id);
+                                        subscriber = new SubscriptionHandler_1.WebSocketSubscriber(connectionId, endpoint);
+                                        return [4 /*yield*/, this.subscriptionHandler.subscribe(id, subscriber)];
+                                    case 2:
+                                        _a.sent();
+                                        return [2 /*return*/];
+                                }
+                            });
+                        }); };
                         _a = routeKey;
                         switch (_a) {
-                            case '$connect': return [3 /*break*/, 3];
+                            case '$connect': return [3 /*break*/, 2];
                             case '$disconnect': return [3 /*break*/, 5];
                             case '$default': return [3 /*break*/, 7];
                         }
-                        return [3 /*break*/, 8];
+                        return [3 /*break*/, 10];
+                    case 2:
+                        authorization = headers === null || headers === void 0 ? void 0 : headers.Authorization;
+                        if (!authorization) return [3 /*break*/, 4];
+                        return [4 /*yield*/, verifyAndStoreConnection(authorization)];
                     case 3:
-                        subscriber = new SubscriptionHandler_1.WebSocketSubscriber(connectionId, endpoint);
-                        return [4 /*yield*/, this.subscriptionHandler.subscribe(id, subscriber)];
-                    case 4:
                         _b.sent();
-                        return [3 /*break*/, 8];
+                        _b.label = 4;
+                    case 4: return [3 /*break*/, 10];
                     case 5: return [4 /*yield*/, this.subscriptionHandler.unsubscribe(connectionId)];
                     case 6:
                         _b.sent();
-                        return [3 /*break*/, 8];
-                    case 7: throw new Error("incoming messages not supported");
-                    case 8: return [3 /*break*/, 11];
-                    case 9:
+                        return [3 /*break*/, 10];
+                    case 7:
+                        if (!event.body) return [3 /*break*/, 9];
+                        message = JSON.parse(event.body);
+                        if (!message.authorization) return [3 /*break*/, 9];
+                        return [4 /*yield*/, verifyAndStoreConnection(message.authorization)];
+                    case 8:
+                        _b.sent();
+                        return [3 /*break*/, 10];
+                    case 9: throw new Error("incoming messages not supported");
+                    case 10: return [3 /*break*/, 13];
+                    case 11:
                         error_1 = _b.sent();
                         error_1.statusCode = error_1.statusCode || 500;
                         log.error(error_1);
+                        // TODO: this doesn't work on $connect since it needs the 200 first
                         return [4 /*yield*/, ApiGatewayWebSockets_1.default.sendWebSocketMessage(connectionId, endpoint, "" + error_1)];
-                    case 10:
+                    case 12:
+                        // TODO: this doesn't work on $connect since it needs the 200 first
                         _b.sent();
-                        return [3 /*break*/, 11];
-                    case 11: return [2 /*return*/, { statusCode: 200 }];
+                        return [3 /*break*/, 13];
+                    case 13: return [2 /*return*/, { statusCode: 200 }];
                 }
             });
         });

@@ -21,6 +21,7 @@ export interface ApiGatewayWebSocketEvent {
   };
   headers?: { [key: string]: any };
   isBase64Encoded: boolean;
+  body?: string;
 }
 
 export interface ApiGatewayWebSocketResult {
