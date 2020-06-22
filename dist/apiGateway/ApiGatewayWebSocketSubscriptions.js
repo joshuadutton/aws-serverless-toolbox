@@ -88,7 +88,7 @@ var ApiGatewayWebSocketSubscriptions = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 9, , 11]);
-                        authorization = headers['Authorization'] || headers['Sec-WebSocket-Protocol'];
+                        authorization = headers['Authorization'] || "Bearer " + headers['Sec-WebSocket-Protocol'];
                         return [4 /*yield*/, this.auth.verifyBearerToken(authorization, this.scopes)];
                     case 2:
                         id = _b.sent();

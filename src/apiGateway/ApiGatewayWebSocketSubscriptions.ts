@@ -31,7 +31,7 @@ export default class ApiGatewayWebSocketSubscriptions {
     }
 
     try {
-      const authorization = headers['Authorization'] || headers['Sec-WebSocket-Protocol'];
+      const authorization = headers['Authorization'] || `Bearer ${headers['Sec-WebSocket-Protocol']}`;
       const id = await this.auth.verifyBearerToken(authorization, this.scopes);
       log.logApiGatewayWebsocket(routeKey, endpoint, connectionId, id);
       switch (routeKey) {
