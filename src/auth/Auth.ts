@@ -8,11 +8,7 @@ export interface ApiGatewayAuthorizerTokenEvent {
 
 export type Token = string;
 export interface Auth {
-  addPassword(id: string, password: string, scopes: string[]): Promise<Token>;
-  verifyPassword(id: string, password: string): Promise<Token>;
-  createToken(id: string, scopes: string[]): Promise<Token>;
   verifyToken(token: Token, scopes: string[]): Promise<string>;
-  verifyBearerToken(bearerToken: string | undefined, scopes: string[]): Promise<string>;
-  revokeTokenForId(token: Token, id: string): Promise<void>;
+  verifyAuthorizationHeaderValue(bearerToken: string | undefined, scopes: string[]): Promise<string>;
   authHandler(event: ApiGatewayAuthorizerTokenEvent, scopes: string[]): Promise<IamPolicyForPrincipal>;
 }

@@ -256,15 +256,15 @@ var JwtAuth = /** @class */ (function () {
             });
         });
     };
-    JwtAuth.prototype.verifyBearerToken = function (bearerToken, scopes) {
+    JwtAuth.prototype.verifyAuthorizationHeaderValue = function (value, scopes) {
         return __awaiter(this, void 0, void 0, function () {
             var token;
             return __generator(this, function (_a) {
                 try {
-                    if (!bearerToken) {
+                    if (!value) {
                         throw new Error('no bearerToken');
                     }
-                    token = bearerToken.substring(7);
+                    token = value.substring(7);
                     return [2 /*return*/, this.verifyToken(token, scopes)];
                 }
                 catch (error) {
@@ -310,13 +310,13 @@ var JwtAuth = /** @class */ (function () {
     };
     JwtAuth.prototype.authHandler = function (event, scopes) {
         return __awaiter(this, void 0, void 0, function () {
-            var bearerToken, sub, error_3;
+            var authToken, sub, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        bearerToken = event.authorizationToken;
-                        return [4 /*yield*/, this.verifyBearerToken(bearerToken, scopes)];
+                        authToken = event.authorizationToken;
+                        return [4 /*yield*/, this.verifyAuthorizationHeaderValue(authToken, scopes)];
                     case 1:
                         sub = _a.sent();
                         log.info('success');

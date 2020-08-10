@@ -94,7 +94,7 @@ var ApiGatewayWebSocketSubscriptions = /** @class */ (function () {
                             var id, subscriber;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
-                                    case 0: return [4 /*yield*/, this.auth.verifyBearerToken(authorization, this.scopes)];
+                                    case 0: return [4 /*yield*/, this.auth.verifyAuthorizationHeaderValue(authorization, this.scopes)];
                                     case 1:
                                         id = _a.sent();
                                         log.info(id);

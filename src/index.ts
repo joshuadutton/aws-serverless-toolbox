@@ -17,14 +17,19 @@ export { DynamoDbWrapper, ConditionExpression, UpdateExpression };
 import S3Wrapper from './s3/S3Wrapper';
 export { S3Wrapper };
 
+// Aurora
+import * as Aurora from './aurora/AuroraCommon';
+export { Aurora };
+
 // Auth
-import { Auth, Token } from './auth/Auth';
-import JwtAuth, { PersistedPassword } from './auth/JwtAuth';
-export { Auth, Token, JwtAuth, PersistedPassword };
+import { Auth, Token, ApiGatewayAuthorizerTokenEvent } from './auth/Auth';
+import { PasswordAuth, PersistedPassword } from './auth/PasswordAuth';
+import JwtAuth from './auth/JwtAuth';
+export { Auth, Token, JwtAuth, PersistedPassword, PasswordAuth, ApiGatewayAuthorizerTokenEvent };
 
 // API Gateway
 import ApiGatewayExpress from './apiGateway/ApiGatewayExpress';
-import ApiGatewayWebSockets, { ApiGatewayWebSocketEvent } from './apiGateway/ApiGatewayWebSockets';
+import ApiGatewayWebSockets, { ApiGatewayWebSocketEvent, ApiGatewayWebSocketResult } from './apiGateway/ApiGatewayWebSockets';
 import ApiGatewayWebSocketSubscriptions from './apiGateway/ApiGatewayWebSocketSubscriptions';
 import SubscriptionHandler, { Subscription, Subscriber } from './apiGateway/SubscriptionHandler';
 import HttpError from './apiGateway/HttpError';
@@ -32,6 +37,7 @@ export {
   ApiGatewayExpress,
   ApiGatewayWebSockets,
   ApiGatewayWebSocketEvent,
+  ApiGatewayWebSocketResult,
   SubscriptionHandler,
   ApiGatewayWebSocketSubscriptions,
   HttpError,

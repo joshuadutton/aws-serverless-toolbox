@@ -34,7 +34,7 @@ export default class ApiGatewayWebSocketSubscriptions {
 
     try {
       const verifyAndStoreConnection = async (authorization: string) => {
-        const id = await this.auth.verifyBearerToken(authorization, this.scopes);
+        const id = await this.auth.verifyAuthorizationHeaderValue(authorization, this.scopes);
         log.info(id);
         const subscriber = new WebSocketSubscriber(connectionId, endpoint);
         await this.subscriptionHandler.subscribe(id, subscriber);

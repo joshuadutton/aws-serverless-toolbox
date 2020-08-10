@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Subscription = exports.HttpError = exports.ApiGatewayWebSocketSubscriptions = exports.SubscriptionHandler = exports.ApiGatewayWebSockets = exports.ApiGatewayExpress = exports.JwtAuth = exports.S3Wrapper = exports.UpdateExpression = exports.ConditionExpression = exports.DynamoDbWrapper = exports.S3ObjectStore = exports.DynamoDbObjectStore = exports.actionHandler = void 0;
+exports.Subscription = exports.HttpError = exports.ApiGatewayWebSocketSubscriptions = exports.SubscriptionHandler = exports.ApiGatewayWebSockets = exports.ApiGatewayExpress = exports.JwtAuth = exports.Aurora = exports.S3Wrapper = exports.UpdateExpression = exports.ConditionExpression = exports.DynamoDbWrapper = exports.S3ObjectStore = exports.DynamoDbObjectStore = exports.actionHandler = void 0;
 // logs
 exports.log = __importStar(require("./log"));
 // Object Stores
@@ -42,6 +42,9 @@ exports.UpdateExpression = UpdateExpression_1.default;
 // S3
 var S3Wrapper_1 = __importDefault(require("./s3/S3Wrapper"));
 exports.S3Wrapper = S3Wrapper_1.default;
+// Aurora
+var Aurora = __importStar(require("./aurora/AuroraCommon"));
+exports.Aurora = Aurora;
 var JwtAuth_1 = __importDefault(require("./auth/JwtAuth"));
 exports.JwtAuth = JwtAuth_1.default;
 // API Gateway

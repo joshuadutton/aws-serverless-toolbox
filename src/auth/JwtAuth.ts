@@ -4,17 +4,11 @@ import jwt from 'jsonwebtoken';
 import * as log from '../log';
 import HttpError from '../apiGateway/HttpError';
 import { IamPolicyForPrincipal } from '../AwsResource';
-import { Auth, Token, ApiGatewayAuthorizerTokenEvent } from './Auth';
+import { PasswordAuth, PersistedPassword } from './PasswordAuth';
+import { Token, ApiGatewayAuthorizerTokenEvent } from './Auth';
 import ObjectStore from '../objectStore/ObjectStore';
 
-export interface PersistedPassword {
-  salt: string;
-  hash: string;
-  iterations: number;
-  scopes: string[];
-}
-
-export default class JwtAuth implements Auth {
+export default class JwtAuth implements PasswordAuth {
   private readonly hashLength = 256;
   private readonly digest = 'sha256';
   private readonly saltLength = 64;
@@ -159,12 +153,12 @@ export default class JwtAuth implements Auth {
     return this.createToken(id, persistedPassword.scopes);
   }
 
-  async verifyBearerToken(bearerToken: string | undefined, scopes: string[]): Promise<string> {
+  async verifyAuthorizationHeaderValue(value: string | undefined, scopes: string[]): Promise<string> {
     try {
-      if (!bearerToken) {
+      if (!value) {
         throw new Error('no bearerToken');
       }
-      const token = bearerToken.substring(7); // remove "bearer " from token
+      const token = value.substring(7); // remove "bearer " from token
       return this.verifyToken(token, scopes);
     } catch (error) {
       log.error(error);
@@ -192,8 +186,8 @@ export default class JwtAuth implements Auth {
 
   async authHandler(event: ApiGatewayAuthorizerTokenEvent, scopes: string[]): Promise<IamPolicyForPrincipal> {
     try {
-      const bearerToken = event.authorizationToken;
-      const sub = await this.verifyBearerToken(bearerToken, scopes);
+      const authToken = event.authorizationToken;
+      const sub = await this.verifyAuthorizationHeaderValue(authToken, scopes);
       log.info('success');
       return this.generateIamPolicy({ id: sub }, 'Allow', event.methodArn);
     } catch (error) {
