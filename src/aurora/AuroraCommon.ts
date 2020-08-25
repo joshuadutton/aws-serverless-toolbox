@@ -8,29 +8,18 @@ export function iamRoleStatements(): IamRoleStatement[] {
     {
       Sid: 'SecretsManagerDbCredentialsAccess',
       Effect: 'Allow',
-      Action: [
-        'secretsmanager:GetSecretValue',
-        'secretsmanager:PutResourcePolicy',
-        'secretsmanager:PutSecretValue',
-        'secretsmanager:DeleteSecret',
-        'secretsmanager:DescribeSecret',
-        'secretsmanager:TagResource'
-      ],
+      Action: ['secretsmanager:GetSecretValue'],
       Resource: 'arn:aws:secretsmanager:*:*:secret:rds-db-credentials/*'
     },
     {
       Sid: 'RDSDataServiceAccess',
       Effect: 'Allow',
       Action: [
-        'secretsmanager:CreateSecret',
-        'secretsmanager:ListSecrets',
-        'secretsmanager:GetRandomPassword',
-        'tag:GetResources',
+        'rds-data:ExecuteStatement',
         'rds-data:BatchExecuteStatement',
         'rds-data:BeginTransaction',
-        'rds-data:CommitTransaction',
-        'rds-data:ExecuteStatement',
-        'rds-data:RollbackTransaction'
+        'rds-data:RollbackTransaction',
+        'rds-data:CommitTransaction'
       ],
       Resource: '*'
     }

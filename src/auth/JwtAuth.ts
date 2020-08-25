@@ -16,8 +16,8 @@ export default class JwtAuth implements PasswordAuth {
   private readonly signingKeyId = '927cde40-41e7-45b1-861a-864f6d6ec269'; // uuid to not conflict with other ids
   private signingSecretAsPersistedPassword?: PersistedPassword; // stored as hash in PersistedPassword to look like any other entry in password table
   private readonly passwordStore: ObjectStore<PersistedPassword>;
-  private readonly timeToLive: number;
-  private readonly revokable: boolean;
+  readonly timeToLive: number;
+  readonly revokable: boolean;
 
   constructor(store: ObjectStore<PersistedPassword>, timeToLive = 3600, revokable = false) {
     this.passwordStore = store;
@@ -25,7 +25,7 @@ export default class JwtAuth implements PasswordAuth {
     this.revokable = revokable;
   }
 
-  private async getSigningSecret(): Promise<string> {
+  async getSigningSecret(): Promise<string> {
     if (this.signingSecretAsPersistedPassword) {
       // Lambda memory persists if the function is kept warm
       // use this carefully

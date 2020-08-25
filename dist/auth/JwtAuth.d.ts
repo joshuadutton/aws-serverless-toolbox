@@ -10,10 +10,10 @@ export default class JwtAuth implements PasswordAuth {
     private readonly signingKeyId;
     private signingSecretAsPersistedPassword?;
     private readonly passwordStore;
-    private readonly timeToLive;
-    private readonly revokable;
+    readonly timeToLive: number;
+    readonly revokable: boolean;
     constructor(store: ObjectStore<PersistedPassword>, timeToLive?: number, revokable?: boolean);
-    private getSigningSecret;
+    getSigningSecret(): Promise<string>;
     generatePersistedPassword(password: string, scopes: string[]): Promise<PersistedPassword>;
     private verifyPersistedPassword;
     createToken(id: string, scopes: string[]): Promise<Token>;
