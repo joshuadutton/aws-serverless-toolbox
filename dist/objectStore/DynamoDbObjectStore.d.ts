@@ -8,6 +8,6 @@ export default class DynamoObjectDBStore<T> implements ObjectStore<T> {
     private createExpires;
     get(id: string): Promise<T | undefined>;
     put(id: string, item: T): Promise<T>;
-    delete(id: string): Promise<void>;
+    delete(id: string): Promise<any>;
     updateState(id: string, action: Action, reducer: Reducer<T>): Promise<T>;
 }

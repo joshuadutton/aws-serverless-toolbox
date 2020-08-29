@@ -7,9 +7,7 @@ function iamRoleStatements() {
         {
             Sid: 'SecretsManagerDbCredentialsAccess',
             Effect: 'Allow',
-            Action: [
-                'secretsmanager:GetSecretValue',
-            ],
+            Action: ['secretsmanager:GetSecretValue'],
             Resource: 'arn:aws:secretsmanager:*:*:secret:rds-db-credentials/*'
         },
         {

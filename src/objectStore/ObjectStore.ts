@@ -29,11 +29,3 @@ export async function actionHandler<T>(store: ObjectStore<T>, id: string, action
     return Promise.reject(error);
   }
 }
-
-export function getEnvVar(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`${name} not defined in env`);
-  }
-  return value;
-}

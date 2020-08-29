@@ -16,4 +16,3 @@ export interface Action {
 }
 export declare type Reducer<T> = (state: T, action: Action) => T;
 export declare function actionHandler<T>(store: ObjectStore<T>, id: string, action: Action, reducer: Reducer<T>): Promise<T>;
-export declare function getEnvVar(name: string): string;

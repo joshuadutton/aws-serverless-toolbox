@@ -38,7 +38,7 @@ export default class DynamoObjectDBStore<T> implements ObjectStore<T> {
   }
 
   async delete(id: string) {
-    this.db.delete(this.tableName, { id });
+    return this.db.delete(this.tableName, { id });
   }
 
   async updateState(id: string, action: Action, reducer: Reducer<T>): Promise<T> {

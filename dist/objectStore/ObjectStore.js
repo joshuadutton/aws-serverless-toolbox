@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getEnvVar = exports.actionHandler = void 0;
+exports.actionHandler = void 0;
 function actionHandler(store, id, action, reducer) {
     return __awaiter(this, void 0, void 0, function () {
         var state, error_1;
@@ -64,12 +64,4 @@ function actionHandler(store, id, action, reducer) {
     });
 }
 exports.actionHandler = actionHandler;
-function getEnvVar(name) {
-    var value = process.env[name];
-    if (!value) {
-        throw new Error(name + " not defined in env");
-    }
-    return value;
-}
-exports.getEnvVar = getEnvVar;
 //# sourceMappingURL=ObjectStore.js.map

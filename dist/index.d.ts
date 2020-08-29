@@ -1,4 +1,6 @@
 export * as log from './log';
+import { getEnvVar } from './utilities';
+export { getEnvVar };
 import ObjectStore, { Action, Reducer, actionHandler } from './objectStore/ObjectStore';
 import DynamoDbObjectStore from './objectStore/DynamoDbObjectStore';
 import S3ObjectStore from './objectStore/S3ObjectStore';

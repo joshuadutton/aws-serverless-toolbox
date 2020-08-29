@@ -97,8 +97,7 @@ var DynamoObjectDBStore = /** @class */ (function () {
     DynamoObjectDBStore.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                this.db.delete(this.tableName, { id: id });
-                return [2 /*return*/];
+                return [2 /*return*/, this.db.delete(this.tableName, { id: id })];
             });
         });
     };

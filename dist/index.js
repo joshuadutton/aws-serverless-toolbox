@@ -22,9 +22,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Subscription = exports.HttpError = exports.ApiGatewayWebSocketSubscriptions = exports.SubscriptionHandler = exports.ApiGatewayWebSockets = exports.ApiGatewayExpress = exports.JwtAuth = exports.Aurora = exports.S3Wrapper = exports.UpdateExpression = exports.ConditionExpression = exports.DynamoDbWrapper = exports.S3ObjectStore = exports.DynamoDbObjectStore = exports.actionHandler = void 0;
+exports.Subscription = exports.HttpError = exports.ApiGatewayWebSocketSubscriptions = exports.SubscriptionHandler = exports.ApiGatewayWebSockets = exports.ApiGatewayExpress = exports.JwtAuth = exports.Aurora = exports.S3Wrapper = exports.UpdateExpression = exports.ConditionExpression = exports.DynamoDbWrapper = exports.S3ObjectStore = exports.DynamoDbObjectStore = exports.actionHandler = exports.getEnvVar = void 0;
 // logs
 exports.log = __importStar(require("./log"));
+// utilities
+var utilities_1 = require("./utilities");
+Object.defineProperty(exports, "getEnvVar", { enumerable: true, get: function () { return utilities_1.getEnvVar; } });
 // Object Stores
 var ObjectStore_1 = require("./objectStore/ObjectStore");
 Object.defineProperty(exports, "actionHandler", { enumerable: true, get: function () { return ObjectStore_1.actionHandler; } });
