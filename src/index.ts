@@ -52,3 +52,10 @@ export {
 // AWS Resources
 import { IamRoleStatement, IamPolicy, IamPolicyForPrincipal, CloudFormation } from './AwsResource';
 export { IamRoleStatement, IamPolicy, IamPolicyForPrincipal, CloudFormation };
+
+// Hasura
+import HasuraAuthRouter from './hasura/HasuraAuthRouter';
+import HasuraUserApi, { HasuraUserApiUser } from './hasura/HasuraUserApi';
+import JwtHasuraAuth from './hasura/HasuraUserApi';
+export * from './hasura/HasuraLib';
+export { HasuraAuthRouter, HasuraUserApi, HasuraUserApiUser, JwtHasuraAuth };

@@ -25,3 +25,8 @@ import HttpError from './apiGateway/HttpError';
 export { ApiGatewayExpress, ApiGatewayWebSockets, ApiGatewayWebSocketEvent, ApiGatewayWebSocketResult, SubscriptionHandler, ApiGatewayWebSocketSubscriptions, HttpError, Subscription, Subscriber };
 import { IamRoleStatement, IamPolicy, IamPolicyForPrincipal, CloudFormation } from './AwsResource';
 export { IamRoleStatement, IamPolicy, IamPolicyForPrincipal, CloudFormation };
+import HasuraAuthRouter from './hasura/HasuraAuthRouter';
+import HasuraUserApi, { HasuraUserApiUser } from './hasura/HasuraUserApi';
+import JwtHasuraAuth from './hasura/HasuraUserApi';
+export * from './hasura/HasuraLib';
+export { HasuraAuthRouter, HasuraUserApi, HasuraUserApiUser, JwtHasuraAuth };

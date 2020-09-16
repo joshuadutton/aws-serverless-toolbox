@@ -18,11 +18,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Subscription = exports.HttpError = exports.ApiGatewayWebSocketSubscriptions = exports.SubscriptionHandler = exports.ApiGatewayWebSockets = exports.ApiGatewayExpress = exports.JwtAuth = exports.Aurora = exports.S3Wrapper = exports.UpdateExpression = exports.ConditionExpression = exports.DynamoDbWrapper = exports.S3ObjectStore = exports.DynamoDbObjectStore = exports.actionHandler = exports.getEnvVar = void 0;
+exports.JwtHasuraAuth = exports.HasuraUserApi = exports.HasuraAuthRouter = exports.Subscription = exports.HttpError = exports.ApiGatewayWebSocketSubscriptions = exports.SubscriptionHandler = exports.ApiGatewayWebSockets = exports.ApiGatewayExpress = exports.JwtAuth = exports.Aurora = exports.S3Wrapper = exports.UpdateExpression = exports.ConditionExpression = exports.DynamoDbWrapper = exports.S3ObjectStore = exports.DynamoDbObjectStore = exports.actionHandler = exports.getEnvVar = void 0;
 // logs
 exports.log = __importStar(require("./log"));
 // utilities
@@ -62,4 +65,12 @@ exports.SubscriptionHandler = SubscriptionHandler_1.default;
 Object.defineProperty(exports, "Subscription", { enumerable: true, get: function () { return SubscriptionHandler_1.Subscription; } });
 var HttpError_1 = __importDefault(require("./apiGateway/HttpError"));
 exports.HttpError = HttpError_1.default;
+// Hasura
+var HasuraAuthRouter_1 = __importDefault(require("./hasura/HasuraAuthRouter"));
+exports.HasuraAuthRouter = HasuraAuthRouter_1.default;
+var HasuraUserApi_1 = __importDefault(require("./hasura/HasuraUserApi"));
+exports.HasuraUserApi = HasuraUserApi_1.default;
+var HasuraUserApi_2 = __importDefault(require("./hasura/HasuraUserApi"));
+exports.JwtHasuraAuth = HasuraUserApi_2.default;
+__exportStar(require("./hasura/HasuraLib"), exports);
 //# sourceMappingURL=index.js.map
