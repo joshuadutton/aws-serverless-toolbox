@@ -1068,8 +1068,10 @@ aws-serverless-express@^3.3.8:
     binary-case "^1.0.0"
     type-is "^1.6.16"
 
-"aws-serverless-toolbox@file:../..":
-  version "0.2.1"
+aws-serverless-toolbox@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/aws-serverless-toolbox/-/aws-serverless-toolbox-0.2.2.tgz#f25af0e302a773df6d8ee3ffc0917bd9e77a6b43"
+  integrity sha512-y1ZaQP2JuogoslHvjOccmrhxd+/Y69E+sAQg/YhFh1Wy1ySbYtkhAKYN/NUv75Vamz4eLEaAoDBeZNueA1Lyjg==
   dependencies:
     aws-serverless-express "^3.3.8"
     express "^4.17.1"
