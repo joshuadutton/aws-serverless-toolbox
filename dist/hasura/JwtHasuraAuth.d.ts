@@ -1,6 +1,6 @@
 import { ObjectStore, Token } from '../index';
 import HasuraUserApi, { HasuraUserApiUser } from './HasuraUserApi';
-export interface PersistedPassword {
+export interface HasuraPersistedPassword {
     id: string;
     salt: string;
     hash: string;
@@ -21,8 +21,8 @@ export default class JwtHasuraAuth {
     readonly jwtClaimsKey: string;
     readonly jwtAllowedRoles: string[];
     readonly jwtDefaultRole: string;
-    constructor(store: ObjectStore<PersistedPassword>, jwtKey: string, jwtClaimsKey: string, api: HasuraUserApi, jwtAllowedRoles?: string[], jwtDefaultRole?: string, minPasswordLength?: number);
-    generatePersistedPassword(id: string, userId: string, password: string): Promise<PersistedPassword>;
+    constructor(store: ObjectStore<HasuraPersistedPassword>, jwtKey: string, jwtClaimsKey: string, api: HasuraUserApi, jwtAllowedRoles?: string[], jwtDefaultRole?: string, minPasswordLength?: number);
+    generatePersistedPassword(id: string, userId: string, password: string): Promise<HasuraPersistedPassword>;
     private verifyPersistedPassword;
     createToken(user: HasuraUserApiUser): Promise<Token>;
     addPassword(email: string, password: string): Promise<{

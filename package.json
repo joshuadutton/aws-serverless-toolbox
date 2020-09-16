@@ -1,6 +1,6 @@
 {
   "name": "aws-serverless-toolbox",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Reusable building blocks for AWS and Hasura",
   "main": "dist/index.js",
   "typings": "./dist/index.d.ts",

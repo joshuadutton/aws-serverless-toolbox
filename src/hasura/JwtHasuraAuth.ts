@@ -4,7 +4,7 @@ import { ObjectStore, Token, HttpError } from '../index';
 
 import HasuraUserApi, { HasuraUserApiUser } from './HasuraUserApi';
 
-export interface PersistedPassword {
+export interface HasuraPersistedPassword {
   id: string;
   salt: string;
   hash: string;
@@ -17,7 +17,7 @@ export default class JwtHasuraAuth {
   private readonly digest = 'sha256';
   private readonly saltLength = 64;
   private readonly iterations = 10000;
-  private readonly passwordStore: ObjectStore<PersistedPassword>;
+  private readonly passwordStore: ObjectStore<HasuraPersistedPassword>;
   private readonly api: HasuraUserApi;
   private readonly minPasswordLength: number;
   readonly timeToLive: number;
@@ -28,7 +28,7 @@ export default class JwtHasuraAuth {
   readonly jwtDefaultRole: string;
 
   constructor(
-    store: ObjectStore<PersistedPassword>,
+    store: ObjectStore<HasuraPersistedPassword>,
     jwtKey: string,
     jwtClaimsKey: string,
     api: HasuraUserApi,
@@ -47,8 +47,8 @@ export default class JwtHasuraAuth {
     this.minPasswordLength = minPasswordLength;
   }
 
-  async generatePersistedPassword(id: string, userId: string, password: string): Promise<PersistedPassword> {
-    return new Promise<PersistedPassword>((resolve, reject) => {
+  async generatePersistedPassword(id: string, userId: string, password: string): Promise<HasuraPersistedPassword> {
+    return new Promise<HasuraPersistedPassword>((resolve, reject) => {
       const salt = crypto.randomBytes(this.saltLength).toString('base64');
       crypto.pbkdf2(password, salt, this.iterations, this.hashLength, this.digest, (error, hash) => {
         if (error) {
@@ -66,7 +66,7 @@ export default class JwtHasuraAuth {
     });
   }
 
-  private async verifyPersistedPassword(persistedPassword: PersistedPassword, password: string): Promise<boolean> {
+  private async verifyPersistedPassword(persistedPassword: HasuraPersistedPassword, password: string): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
       crypto.pbkdf2(
         password,

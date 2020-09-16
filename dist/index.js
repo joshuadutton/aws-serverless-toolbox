@@ -70,7 +70,7 @@ var HasuraAuthRouter_1 = __importDefault(require("./hasura/HasuraAuthRouter"));
 exports.HasuraAuthRouter = HasuraAuthRouter_1.default;
 var HasuraUserApi_1 = __importDefault(require("./hasura/HasuraUserApi"));
 exports.HasuraUserApi = HasuraUserApi_1.default;
-var HasuraUserApi_2 = __importDefault(require("./hasura/HasuraUserApi"));
-exports.JwtHasuraAuth = HasuraUserApi_2.default;
+var JwtHasuraAuth_1 = __importDefault(require("./hasura/JwtHasuraAuth"));
+exports.JwtHasuraAuth = JwtHasuraAuth_1.default;
 __exportStar(require("./hasura/HasuraLib"), exports);
 //# sourceMappingURL=index.js.map
