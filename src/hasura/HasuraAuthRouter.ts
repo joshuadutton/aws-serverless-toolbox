@@ -1,15 +1,16 @@
 import { Router, NextFunction, Request, Response } from 'express';
 import { HttpError } from '../index';
+import { HasuraUserBase } from './HasuraUserApi';
 import JwtHasuraAuth from './JwtHasuraAuth';
 
 // HTML Standard: https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
 const emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
-export default class AuthRouter {
-  readonly auth: JwtHasuraAuth;
+export default class AuthRouter<T extends HasuraUserBase> {
+  readonly auth: JwtHasuraAuth<T>;
   readonly router = Router();
 
-  constructor(auth: JwtHasuraAuth) {
+  constructor(auth: JwtHasuraAuth<T>) {
     this.auth = auth;
     this.setupRoutes();
   }
@@ -21,7 +22,7 @@ export default class AuthRouter {
     });
     this.router.post('/login', async (request: Request, response: Response, next: NextFunction) => {
       try {
-        const { email, password } = request.body.input;
+        const { email, password } = request.body;
         if (!email || !password) {
           throw new HttpError(400, 'email and password required as body params');
         }
@@ -34,7 +35,7 @@ export default class AuthRouter {
     });
     this.router.post('/register', async (request: Request, response: Response, next: NextFunction) => {
       try {
-        const { email, password } = request.body.input;
+        const { email, password } = request.body;
         if (!email || !password) {
           throw new HttpError(400, 'email and password required as body params');
         } else if (!emailRegex.test(email)) {

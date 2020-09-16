@@ -25,7 +25,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JwtHasuraAuth = exports.HasuraUserApi = exports.HasuraAuthRouter = exports.Subscription = exports.HttpError = exports.ApiGatewayWebSocketSubscriptions = exports.SubscriptionHandler = exports.ApiGatewayWebSockets = exports.ApiGatewayExpress = exports.JwtAuth = exports.Aurora = exports.S3Wrapper = exports.UpdateExpression = exports.ConditionExpression = exports.DynamoDbWrapper = exports.S3ObjectStore = exports.DynamoDbObjectStore = exports.actionHandler = exports.getEnvVar = void 0;
+exports.JwtHasuraAuth = exports.HasuraAuthRouter = exports.Subscription = exports.HttpError = exports.ApiGatewayWebSocketSubscriptions = exports.SubscriptionHandler = exports.ApiGatewayWebSockets = exports.ApiGatewayExpress = exports.JwtAuth = exports.Aurora = exports.S3Wrapper = exports.UpdateExpression = exports.ConditionExpression = exports.DynamoDbWrapper = exports.S3ObjectStore = exports.DynamoDbObjectStore = exports.actionHandler = exports.getEnvVar = void 0;
 // logs
 exports.log = __importStar(require("./log"));
 // utilities
@@ -68,8 +68,6 @@ exports.HttpError = HttpError_1.default;
 // Hasura
 var HasuraAuthRouter_1 = __importDefault(require("./hasura/HasuraAuthRouter"));
 exports.HasuraAuthRouter = HasuraAuthRouter_1.default;
-var HasuraUserApi_1 = __importDefault(require("./hasura/HasuraUserApi"));
-exports.HasuraUserApi = HasuraUserApi_1.default;
 var JwtHasuraAuth_1 = __importDefault(require("./hasura/JwtHasuraAuth"));
 exports.JwtHasuraAuth = JwtHasuraAuth_1.default;
 __exportStar(require("./hasura/HasuraLib"), exports);

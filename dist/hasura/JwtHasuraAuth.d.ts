@@ -1,5 +1,5 @@
 import { ObjectStore, Token } from '../index';
-import HasuraUserApi, { HasuraUserApiUser } from './HasuraUserApi';
+import HasuraUserApi, { HasuraUserBase } from './HasuraUserApi';
 export interface HasuraPersistedPassword {
     id: string;
     salt: string;
@@ -7,7 +7,7 @@ export interface HasuraPersistedPassword {
     userId: string;
     iterations: number;
 }
-export default class JwtHasuraAuth {
+export default class JwtHasuraAuth<T extends HasuraUserBase> {
     private readonly hashLength;
     private readonly digest;
     private readonly saltLength;
@@ -18,19 +18,21 @@ export default class JwtHasuraAuth {
     readonly timeToLive: number;
     readonly revokable: boolean;
     readonly jwtKey: string;
-    readonly jwtClaimsKey: string;
-    readonly jwtAllowedRoles: string[];
-    readonly jwtDefaultRole: string;
-    constructor(store: ObjectStore<HasuraPersistedPassword>, jwtKey: string, jwtClaimsKey: string, api: HasuraUserApi, jwtAllowedRoles?: string[], jwtDefaultRole?: string, minPasswordLength?: number);
+    readonly jwtDataCreator: (user: T) => {
+        [key: string]: any;
+    };
+    constructor(store: ObjectStore<HasuraPersistedPassword>, api: HasuraUserApi<T>, jwtKey: string, jwtDataCreator: (user: T) => {
+        [key: string]: any;
+    }, minPasswordLength?: number);
     generatePersistedPassword(id: string, userId: string, password: string): Promise<HasuraPersistedPassword>;
     private verifyPersistedPassword;
-    createToken(user: HasuraUserApiUser): Promise<Token>;
+    createToken(user: T): Promise<Token>;
     addPassword(email: string, password: string): Promise<{
         token: Token;
-        user: HasuraUserApiUser;
+        user: T;
     }>;
     verifyPassword(email: string, password: string): Promise<{
         token: Token;
-        user: HasuraUserApiUser;
+        user: T;
     }>;
 }

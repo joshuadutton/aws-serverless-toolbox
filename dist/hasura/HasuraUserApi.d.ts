@@ -1,11 +1,8 @@
-export interface HasuraUserApiUser {
+export interface HasuraUserBase {
     id: string;
     email: string;
-    role: string;
 }
-export default class HasuraUserApi {
-    private readonly hasuraApi;
-    constructor(url: string, token: string, fetch: any);
-    createUser(email: string): Promise<HasuraUserApiUser>;
-    getUser(id: string): Promise<HasuraUserApiUser>;
+export default interface HasuraUserApi<T extends HasuraUserBase> {
+    createUserWithEmail(email: string): Promise<T>;
+    getUserById(id: string): Promise<T>;
 }

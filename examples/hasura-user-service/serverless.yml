@@ -1,0 +1,60 @@
+service: hasura-user-service-example
+
+custom:
+  secrets: ${ssm:/aws/reference/secretsmanager/${self:service}-${self:provider.stage}~true}
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: us-east-1
+  memorySize: 512 # default is 1024
+  timeout: 30 # max for API Gateway
+  apiKeys:
+    - user-service-key-${self:service}-${self:provider.stage}
+  iamRoleStatements:
+    - ${file(./serverlessConfig.js):config.passwordTableIamRoleStatements}
+  environment:
+    PASSWORD_TABLE: ${file(./serverlessConfig.js):config.passwordTable}
+    REGION: ${self:provider.region}
+    DEBUG: true
+    STAGE: ${self:provider.stage}
+    HASURA_ADMIN_SECRET: ${self:custom.secrets.hasuraAdminSecret}
+    HASURA_URL: ${self:custom.secrets.hasuraUrl}
+    JWT_KEY: ${self:custom.secrets.jwtKey}
+    JWT_CLAIMS_NAMESPACE: ${self:custom.secrets.jwtClaimsNamespace}
+
+plugins:
+  # temp fix to hot reload issue (see https://github.com/dherault/serverless-offline/issues/864)
+  # is --useChildProcesses flag (see package.json) 
+  - serverless-plugin-typescript
+  - serverless-offline
+
+functions:
+  authHandler:
+    handler: src/index.authHandler
+    events:
+      - http:
+          path: /auth/
+          method: ANY
+          cors: true
+      - http:
+          path: "/auth/{proxy+}"
+          method: ANY
+          cors: true
+  eventHandler:
+    handler: src/index.eventHandler
+    events:
+      - http:
+          path: /event/
+          method: ANY
+          private: true
+      - http:
+          path: "/event/{proxy+}"
+          method: ANY
+          private: true
+
+resources:
+  Resources:
+    PasswordTable: ${file(./serverlessConfig.js):config.passwordTableResource}
+    

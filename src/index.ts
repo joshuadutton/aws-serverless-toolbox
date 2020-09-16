@@ -55,7 +55,7 @@ export { IamRoleStatement, IamPolicy, IamPolicyForPrincipal, CloudFormation };
 
 // Hasura
 import HasuraAuthRouter from './hasura/HasuraAuthRouter';
-import HasuraUserApi, { HasuraUserApiUser } from './hasura/HasuraUserApi';
+import HasuraUserApi, { HasuraUserBase } from './hasura/HasuraUserApi';
 import JwtHasuraAuth, { HasuraPersistedPassword } from './hasura/JwtHasuraAuth';
 export * from './hasura/HasuraLib';
-export { HasuraAuthRouter, HasuraUserApi, HasuraUserApiUser, HasuraPersistedPassword, JwtHasuraAuth };
+export { HasuraAuthRouter, HasuraUserApi, HasuraUserBase, HasuraPersistedPassword, JwtHasuraAuth };

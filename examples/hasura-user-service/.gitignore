@@ -1,0 +1,4 @@
+.DS_Store
+.serverless
+.build
+node_modules

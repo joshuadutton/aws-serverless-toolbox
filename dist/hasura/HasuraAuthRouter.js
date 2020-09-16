@@ -58,7 +58,7 @@ var AuthRouter = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        _a = request.body.input, email = _a.email, password = _a.password;
+                        _a = request.body, email = _a.email, password = _a.password;
                         if (!email || !password) {
                             throw new index_1.HttpError(400, 'email and password required as body params');
                         }
@@ -82,7 +82,7 @@ var AuthRouter = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        _a = request.body.input, email = _a.email, password = _a.password;
+                        _a = request.body, email = _a.email, password = _a.password;
                         if (!email || !password) {
                             throw new index_1.HttpError(400, 'email and password required as body params');
                         }

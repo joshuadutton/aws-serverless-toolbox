@@ -43,9 +43,7 @@ var crypto_1 = __importDefault(require("crypto"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var index_1 = require("../index");
 var JwtHasuraAuth = /** @class */ (function () {
-    function JwtHasuraAuth(store, jwtKey, jwtClaimsKey, api, jwtAllowedRoles, jwtDefaultRole, minPasswordLength) {
-        if (jwtAllowedRoles === void 0) { jwtAllowedRoles = ['user', 'admin']; }
-        if (jwtDefaultRole === void 0) { jwtDefaultRole = 'user'; }
+    function JwtHasuraAuth(store, api, jwtKey, jwtDataCreator, minPasswordLength) {
         if (minPasswordLength === void 0) { minPasswordLength = 10; }
         this.hashLength = 256;
         this.digest = 'sha256';
@@ -55,10 +53,8 @@ var JwtHasuraAuth = /** @class */ (function () {
         this.timeToLive = -1;
         this.revokable = false;
         this.jwtKey = jwtKey;
-        this.jwtClaimsKey = jwtClaimsKey;
+        this.jwtDataCreator = jwtDataCreator;
         this.api = api;
-        this.jwtAllowedRoles = jwtAllowedRoles;
-        this.jwtDefaultRole = jwtDefaultRole;
         this.minPasswordLength = minPasswordLength;
     }
     JwtHasuraAuth.prototype.generatePersistedPassword = function (id, userId, password) {
@@ -105,19 +101,8 @@ var JwtHasuraAuth = /** @class */ (function () {
     JwtHasuraAuth.prototype.createToken = function (user) {
         return __awaiter(this, void 0, void 0, function () {
             var jwtData, options;
-            var _a;
-            return __generator(this, function (_b) {
-                jwtData = (_a = {
-                        sub: user.id,
-                        email: user.email,
-                        iat: Date.now() / 1000
-                    },
-                    _a[this.jwtClaimsKey] = {
-                        'x-hasura-allowed-roles': this.jwtAllowedRoles,
-                        'x-hasura-default-role': this.jwtDefaultRole,
-                        'x-hasura-user-id': user.id
-                    },
-                    _a);
+            return __generator(this, function (_a) {
+                jwtData = this.jwtDataCreator(user);
                 options = this.timeToLive > 0 ? { expiresIn: this.timeToLive } : undefined;
                 return [2 /*return*/, jsonwebtoken_1.default.sign(jwtData, this.jwtKey, options)];
             });
@@ -136,7 +121,7 @@ var JwtHasuraAuth = /** @class */ (function () {
                         if (password.length < this.minPasswordLength) {
                             return [2 /*return*/, Promise.reject(new index_1.HttpError(401, "password must be " + this.minPasswordLength + " or more characters long"))];
                         }
-                        return [4 /*yield*/, this.api.createUser(email)];
+                        return [4 /*yield*/, this.api.createUserWithEmail(email)];
                     case 2:
                         user = _a.sent();
                         return [4 /*yield*/, this.generatePersistedPassword(user.email, user.id, password)];
@@ -170,7 +155,7 @@ var JwtHasuraAuth = /** @class */ (function () {
                         if (!validPassword) {
                             return [2 /*return*/, Promise.reject(new index_1.HttpError(400, 'incorrect id or password'))];
                         }
-                        return [4 /*yield*/, this.api.getUser(persistedPassword.userId)];
+                        return [4 /*yield*/, this.api.getUserById(persistedPassword.userId)];
                     case 3:
                         user = _a.sent();
                         return [4 /*yield*/, this.createToken(user)];
