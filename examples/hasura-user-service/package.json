@@ -19,7 +19,7 @@
 				"@types/express": "^4.17.8",
 				"@types/node": "^13.13.20",
 				"@types/node-fetch": "^2.5.7",
-				"aws-sdk": "^2.753.0",
+				"aws-sdk": "^2.814.0",
 				"serverless": "^1.83.0",
 				"serverless-offline": "^6.7.0",
 				"serverless-plugin-typescript": "^1.1.9",
